@@ -1,0 +1,6 @@
+# IDE files
+*.iml
+.idea/
+# Python leftovers
+*/.pytest_cache/
+/*.egg-info/
