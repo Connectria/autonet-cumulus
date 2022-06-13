@@ -52,6 +52,35 @@ def parse_vrf_names(show_int_data: dict) -> [str]:
             if data['mode'] == 'VRF']
 
 
+def get_interface_type(int_name, int_data):
+    """
+    Determine the type of interface represented by the interface name
+    or in the case of some many virtual interface types, the interface
+    data object.  Command will return a string value that can be used
+    in the NETd command string.
+
+    :param int_name: The interface name.
+    :param int_data: The interface data object.
+    :return:
+    """
+    if int_name.startswith('swp'):
+        return 'interface'
+    if int_name.startswith('vlan'):
+        return 'vlan'
+    if int_data['mode'] == '802.3ad':
+        return 'bond'
+    if int_data['mode'] == 'VRF':
+        return 'vrf'
+    if int_data['mode'] == 'Loopback':
+        return 'loopback'
+    if int_data['mode'] == 'Bridge/L2':
+        return 'bridge'
+    # We arrive here by process of elimination.  It's maybe a bit dodgy
+    # but NETd will just reject whatever garbage we create, so it's
+    # (mostly) safe.
+    return 'vxlan'
+
+
 def get_interface_addresses(
         addresses: [str], virtual: bool = False, virtual_type: Optional[str] = None
 ) -> [an_if.InterfaceAddress]:
@@ -248,3 +277,21 @@ def generate_create_commands(interface: an_if.Interface) -> [str]:
         return generate_create_svi_commands(interface)
 
     return []
+
+
+def generate_update_commands(interface: an_if.Interface, update: bool = False) -> [str]:
+    """
+    generate a list of commands required to update an interface's
+    configuration.
+
+    :param interface: An :py:class:`Interface` object.
+    :param update: When True, unset interface properties will be
+        ignored instead of overwritten with default values.
+    :return:
+    """
+    if interface.name.startswith('vlan'):
+        delete_command = f'del vlan {interface.name}'
+        return generate_create_svi_commands(interface)
+    if interface.name.startswith('swp'):
+        delete_command = f'del interface {interface.name}'
+

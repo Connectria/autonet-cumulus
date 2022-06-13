@@ -49,6 +49,21 @@ def test_parse_vrf_names(test_show_int_data):
     assert if_task.parse_vrf_names(test_show_int_data) == expected
 
 
+@pytest.mark.parametrize('test_int_data, expected', [
+    ('bond20', 'bond'),
+    ('swp6', 'interface'),
+    ('vlan71', 'vlan'),
+    ('lo', 'loopback'),
+    ('bridge', 'bridge'),
+    ('vxlan70001', 'vxlan'),
+    ('green', 'vrf')
+], indirect=['test_int_data'])
+def test_get_interface_type(test_int_data, expected):
+    int_name, int_data, _ = test_int_data
+    int_type = if_task.get_interface_type(int_name, int_data)
+    assert int_type == expected
+
+
 @pytest.mark.parametrize('test_addresses, test_virtual, test_virtual_type, expected', [
     (['10.0.0.1/24', 'ea0e:a6b2:68d4:7b21::1/64'],
      False, None,
