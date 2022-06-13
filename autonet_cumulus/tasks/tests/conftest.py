@@ -3,16 +3,22 @@ import pytest
 
 from autonet_cumulus.commands import CommandResult, CommandResultSet, Commands
 
+
 @pytest.fixture
 def test_int_data(test_show_int_data, request):
+    """
+    Returns a tuple of `int_name, int_data, subint_data`
+    """
     subint = f"{request.param}-v0"
     if not request.param or request.param not in test_show_int_data:
-        return None, None
+        return request.param, None, None
     elif subint in test_show_int_data:
-        return (test_show_int_data[request.param],
+        return (request.param,
+                test_show_int_data[request.param],
                 test_show_int_data[subint])
     else:
-        return (test_show_int_data[request.param],
+        return (request.param,
+                test_show_int_data[request.param],
                 None)
 
 

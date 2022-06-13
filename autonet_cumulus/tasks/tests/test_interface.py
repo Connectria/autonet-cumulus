@@ -124,7 +124,7 @@ def test_get_interface_addresses(test_addresses, test_virtual,
         vrf='TestCust1-Prod'))
 ], indirect=['test_int_data'])
 def test_get_route_attributes(test_int_data, test_vrf_list, expected):
-    int_data, subint_data = test_int_data
+    _, int_data, subint_data = test_int_data
     route_attributes = if_task.get_route_attributes(
         int_data, test_vrf_list, subint_data)
     assert route_attributes == expected
@@ -137,18 +137,18 @@ def test_get_route_attributes(test_int_data, test_vrf_list, expected):
         dot1q_enabled=True, dot1q_vids=[71], dot1q_pvid=71)),
 ], indirect=['test_int_data'])
 def test_get_bridge_attributes(test_int_data, expected):
-    int_data, _ = test_int_data
+    _, int_data, _ = test_int_data
     bridge_attributes = if_task.get_bridge_attributes(int_data)
     assert bridge_attributes == expected
 
 
-@pytest.mark.parametrize('test_int_name, test_int_data, expected', [
-    ('bond20', 'bond20', an_if.Interface(
+@pytest.mark.parametrize('test_int_data, expected', [
+    ('bond20', an_if.Interface(
         name='bond20', mode='routed', description='[an]', virtual=True,
         attributes=an_if.InterfaceRouteAttributes(addresses=[], vrf=None),
         admin_enabled=True, physical_address='0C-33-0E-25-52-03', child=False,
         parent=None, speed=1000, duplex='full', mtu=9216)),
-    ('swp1', 'swp1', an_if.Interface(
+    ('swp1', an_if.Interface(
         name='swp1', mode='routed', description='[an]', virtual=False,
         attributes=an_if.InterfaceRouteAttributes(
             addresses=[
@@ -158,13 +158,13 @@ def test_get_bridge_attributes(test_int_data, expected):
             vrf='TestCust1-Prod'),
         admin_enabled=True, physical_address='0C-33-0E-25-52-01', child=False,
         parent=None, speed=1000, duplex='full', mtu=9216)),
-    ('swp2', 'swp2', an_if.Interface(
+    ('swp2', an_if.Interface(
         name='swp2', mode='bridged', description='', virtual=False,
         attributes=an_if.InterfaceBridgeAttributes(
             dot1q_enabled=True, dot1q_vids=[71, 72, 100], dot1q_pvid=100),
         admin_enabled=True, physical_address='0C-33-0E-25-52-02', child=False,
         parent=None, speed=1000, duplex='full', mtu=1500)),
-    ('vlan72', 'vlan72', an_if.Interface(
+    ('vlan72', an_if.Interface(
         name='vlan72', mode='routed', description='[an]', virtual=True,
         attributes=an_if.InterfaceRouteAttributes(
             addresses=[
@@ -179,9 +179,9 @@ def test_get_bridge_attributes(test_int_data, expected):
         parent=None, speed=None, duplex=None, mtu=9216)
      )
 ], indirect=['test_int_data'])
-def test_get_interface(test_int_name, test_int_data, test_vrf_list, expected):
-    int_data, subint_data = test_int_data
-    interface = if_task.get_interface(test_int_name, int_data,
+def test_get_interface(test_int_data, test_vrf_list, expected):
+    int_name, int_data, subint_data = test_int_data
+    interface = if_task.get_interface(int_name, int_data,
                                       subint_data, test_vrf_list)
     assert interface == expected
 
@@ -413,6 +413,7 @@ def test_get_interfaces(test_show_int_data, test_interface_name, expected):
 def test_generate_create_svi_commands(test_interface, expected):
     commands = if_task.generate_create_svi_commands(test_interface)
     assert commands == expected
+
 
 @pytest.mark.parametrize('test_interface, expected', [
     (an_if.Interface(
