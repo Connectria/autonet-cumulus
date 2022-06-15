@@ -29,6 +29,7 @@ def parse_summary(summary: str) -> Tuple[Optional[str], Optional[str]]:
     Parses the summary string from an interface and returns
     a tuple that represents the master interface and its state or
     :code:`None, None`, if there is no master interface.
+
     :param summary:
     :return:
     """
@@ -135,6 +136,7 @@ def get_route_attributes(
     :py:class:`InterfaceRouteAttributes` object.  In the case of an SVI
     with an EVPN anycast gateway the `-v0` interface's data can be
     passed via the :py:attr:`subint_data` argument.
+
     :param int_data: The interface data from `show interface`.
     :param vrf_list: A list of VRF names.
     :param subint_data: The interface data that corresponds to the data
@@ -313,6 +315,7 @@ def generate_basic_interface_commands(interface: an_if.Interface,
     """
     Generate a list of commands that will configure basic interface
     attributes such as MTU and description.
+
     :param interface:  An :py:class:`Interface` object.
     :param add_base: The base command returned from
         :py:func:`get_base_command` for configuration adds.
@@ -365,6 +368,7 @@ def generate_update_interface_commands(interface: an_if.Interface,
                                        update: bool = False) -> [str]:
     """
     Generate a list of commands required to update an interface.
+
     :param interface: An :py:class:`interface` object.
     :param int_type: An interface type returned from
         :py:func`get_interface_type`.
@@ -416,7 +420,7 @@ def generate_create_commands(interface: an_if.Interface,
 def generate_update_commands(interface: an_if.Interface, int_type: str,
                              update: bool = False) -> [str]:
     """
-    generate a list of commands required to update an interface's
+    Generate a list of commands required to update an interface's
     configuration.
 
     :param interface: An :py:class:`Interface` object.
