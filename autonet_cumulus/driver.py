@@ -1,5 +1,3 @@
-import fabric
-
 from autonet.core.device import AutonetDevice
 from autonet.core import exceptions as exc
 from autonet.core.objects import interfaces as an_if
@@ -11,7 +9,8 @@ from autonet.drivers.device.driver import DeviceDriver
 from dataclasses import dataclass, field
 from json import loads as json_loads
 from json.decoder import JSONDecodeError
-from typing import Optional, Union
+from pssh.clients import SSHClient
+from typing import Tuple
 
 from autonet_cumulus.commands import CommandResult, CommandResultSet, Commands
 from autonet_cumulus.tasks import interface as if_task
@@ -19,10 +18,10 @@ from autonet_cumulus.tasks import interface as if_task
 
 class CumulusDriver(DeviceDriver):
     def __init__(self, device: AutonetDevice):
-        self._connection = fabric.Connection(
-            host=str(device.address),
+        self._connection = SSHClient(
+            str(device.address),
             user=device.credentials.username,
-            connect_kwargs={'password': device.credentials.password}
+            password=device.credentials.password
         )
         self._result_cache = CommandResultSet()
         super().__init__(device)
@@ -44,14 +43,17 @@ class CumulusDriver(DeviceDriver):
             command = f"{command} json"
         return command
 
-    def _exec_raw_command(self, command: str) -> fabric.Result:
+    def _exec_raw_command(self, command: str) -> Tuple[str, str]:
         """
         Execute a raw command on the device and returns the raw output.
+        Returns a tuple of stdout, and stderr strings.
 
         :param command: The command to execute.
         :return:
         """
-        return self._connection.run(command)
+        # return self._connection.run(command)
+        result = self._connection.run_command(command, use_pty=True)
+        return "\n".join(list(result.stdout)), "\n".join(list(result.stderr))
 
     def _exec_net_commands(self, commands: [str], json: bool = True,
                            cache: bool = True) -> CommandResultSet:
@@ -83,14 +85,12 @@ class CumulusDriver(DeviceDriver):
 
             # Prep result class
             result = CommandResult(command, original_command)
-            exec_result = self._exec_raw_command(result.command)
-            result.stdout = exec_result.stdout
-            result.stderr = exec_result.stderr
-            result.return_code = exec_result.return_code
-            result.failed = exec_result.failed
+            stdout, stderr = self._exec_raw_command(result.command)
+            result.stdout = stdout
+            result.stderr = stderr
             if json:
                 try:
-                    result.json = json_loads(exec_result.stdout)
+                    result.json = json_loads(stdout)
                 except JSONDecodeError:
                     pass
             # Append the result to our return value, as well as to
