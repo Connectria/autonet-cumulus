@@ -1,10 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Optional, Union
 
-class Commands:
-    show_int = 'show interface'
-    show_vrf_vni = 'show vrf vni'
-
 
 @dataclass
 class CommandResult(object):
@@ -13,8 +9,6 @@ class CommandResult(object):
     stdout: str = field(default="")
     stderr: str = field(default="")
     json: Optional[Union[dict, list]] = field(default=None)
-    return_code: int = field(default=0)
-    failed: bool = field(default=True)
 
 
 class CommandResultSet(list):
@@ -36,4 +30,3 @@ class CommandResultSet(list):
             if result.command == command or result.original_command == command:
                 return result
         return None
-
