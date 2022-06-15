@@ -64,6 +64,29 @@ def test_get_interface_type(test_int_data, expected):
     assert int_type == expected
 
 
+@pytest.mark.parametrize(
+    'test_int_name, test_int_type, test_action, expected',
+    [
+        ('bond20', 'bond', 'add', 'add bond bond20'),
+        ('swp6', 'interface', 'add', 'add interface swp6'),
+        ('vlan71', 'vlan', 'add', 'add vlan 71'),
+        ('lo', 'loopback', 'add', 'add loopback lo'),
+        ('bridge', 'bridge', 'add', 'add bridge bridge'),
+        ('vxlan70001', 'vxlan', 'add', 'add vxlan vxlan70001'),
+        ('green', 'vrf', 'add', 'add vrf green'),
+        ('bond20', 'bond', 'del', 'del bond bond20'),
+        ('swp6', 'interface', 'del', 'del interface swp6'),
+        ('vlan71', 'vlan', 'del', 'del vlan 71'),
+        ('lo', 'loopback', 'del', 'del loopback lo'),
+        ('bridge', 'bridge', 'del', 'del bridge bridge'),
+        ('vxlan70001', 'vxlan', 'del', 'del vxlan vxlan70001'),
+        ('green', 'vrf', 'del', 'del vrf green')
+    ])
+def test_get_base_command(test_int_name, test_int_type, test_action, expected):
+    assert if_task.get_base_command(
+        test_int_name, test_int_type, test_action) == expected
+
+
 @pytest.mark.parametrize('test_addresses, test_virtual, test_virtual_type, expected', [
     (['10.0.0.1/24', 'ea0e:a6b2:68d4:7b21::1/64'],
      False, None,
@@ -386,51 +409,52 @@ def test_get_interfaces(test_show_int_data, test_interface_name, expected):
     assert interfaces == expected
 
 
-@pytest.mark.parametrize('test_interface, expected', [
-    (an_if.Interface(
-        name='vlan50', attributes=an_if.InterfaceRouteAttributes(
-            addresses=[
-                an_if.InterfaceAddress(address='198.18.0.1/24'),
-                an_if.InterfaceAddress(address='ea0e:a6b2:68d4:7b21::1/64')
-            ],
-            vrf=None),
-        description="test in default",
-        admin_enabled=True),
+@pytest.mark.parametrize('test_attributes, expected', [
+    (an_if.InterfaceBridgeAttributes(
+        dot1q_enabled=False, dot1q_pvid=80),
      [
-         'add vlan 50',
-         'add vlan 50 ip address 198.18.0.1/24',
-         'add vlan 50 ipv6 address ea0e:a6b2:68d4:7b21::1/64',
-         'add vlan 50 alias "test in default"'
+         'del interface swp1 bridge trunk',
+         'del interface swp1 bridge pvid',
+         'add interface swp1 bridge access 80'
      ]),
-    (an_if.Interface(
-        name='vlan50', attributes=an_if.InterfaceRouteAttributes(
-            addresses=[
-                an_if.InterfaceAddress(address='198.18.0.254/24'),
-                an_if.InterfaceAddress(address='198.18.0.1/24',
-                                       virtual=True, virtual_type='anycast'),
-                an_if.InterfaceAddress(address='ea0e:a6b2:68d4:7b21::1/64',
-                                       virtual=True, virtual_type='anycast')
-            ],
-            evpn_anycast_mac='20-00-00-AA-BB-CC',
-            vrf='green'),
-        description="test in green",
-        admin_enabled=False),
+    (an_if.InterfaceBridgeAttributes(
+        dot1q_enabled=True, dot1q_pvid=80,
+        dot1q_vids=[50, 60, 61, 62, 63, 100]),
      [
-         'add vlan 50',
-         'add vlan 50 link down',
-         'add vlan 50 vrf green',
-         'add vlan 50 ip address 198.18.0.254/24',
-         'add vlan 50 ip address-virtual 20:00:00:aa:bb:cc 198.18.0.1/24',
-         'add vlan 50 ipv6 address-virtual 20:00:00:aa:bb:cc ea0e:a6b2:68d4:7b21::1/64',
-         'add vlan 50 alias "test in green"'
-     ]),
+         'del interface swp1 bridge access',
+         'add interface swp1 bridge pvid 80',
+         'add interface swp1 bridge trunk vlans 50,60-63,100'
+     ])
+
 ])
-def test_generate_create_svi_commands(test_interface, expected):
-    commands = if_task.generate_create_svi_commands(test_interface)
+def test_generate_bridge_commands(test_attributes, expected):
+    commands = if_task.generate_bridge_commands(
+        test_attributes, 'add interface swp1', 'del interface swp1')
     assert commands == expected
 
 
 @pytest.mark.parametrize('test_interface, expected', [
+    (an_if.Interface(name='swp1', admin_enabled=True,
+                     mtu=9000, description='test'),
+     [
+         'add interface swp1',
+         'del interface swp1 link down',
+         'add interface swp1 mtu 9000',
+         'add interface swp1 alias "test"'
+     ]),
+    (an_if.Interface(name='swp1', admin_enabled=False),
+     [
+         'add interface swp1',
+         'add interface swp1 link down'
+     ]),
+])
+def test_generate_basic_interface_commands(test_interface, expected):
+    commands = if_task.generate_basic_interface_commands(
+        test_interface, 'add interface swp1', 'del interface swp1')
+    assert commands == expected
+
+
+@pytest.mark.parametrize('test_interface, test_int_type, expected', [
     (an_if.Interface(
         name='vlan50', attributes=an_if.InterfaceRouteAttributes(
             addresses=[
@@ -440,11 +464,13 @@ def test_generate_create_svi_commands(test_interface, expected):
             vrf=None),
         description="test in default",
         admin_enabled=True),
+     'vlan',
      [
          'add vlan 50',
+         'del vlan 50 link down',
+         'add vlan 50 alias "test in default"',
          'add vlan 50 ip address 198.18.0.1/24',
-         'add vlan 50 ipv6 address ea0e:a6b2:68d4:7b21::1/64',
-         'add vlan 50 alias "test in default"'
+         'add vlan 50 ipv6 address ea0e:a6b2:68d4:7b21::1/64'
      ]),
     (an_if.Interface(
         name='vlan50', attributes=an_if.InterfaceRouteAttributes(
@@ -459,21 +485,191 @@ def test_generate_create_svi_commands(test_interface, expected):
             vrf='green'),
         description="test in green",
         admin_enabled=False),
+     'vlan',
      [
          'add vlan 50',
          'add vlan 50 link down',
+         'add vlan 50 alias "test in green"',
          'add vlan 50 vrf green',
          'add vlan 50 ip address 198.18.0.254/24',
          'add vlan 50 ip address-virtual 20:00:00:aa:bb:cc 198.18.0.1/24',
-         'add vlan 50 ipv6 address-virtual 20:00:00:aa:bb:cc ea0e:a6b2:68d4:7b21::1/64',
-         'add vlan 50 alias "test in green"'
+         'add vlan 50 ipv6 address-virtual 20:00:00:aa:bb:cc ea0e:a6b2:68d4:7b21::1/64'
+     ]),
+])
+def test_generate_create_interface_commands(
+        test_interface, test_int_type, expected):
+    commands = if_task.generate_create_interface_commands(
+        test_interface, test_int_type)
+    assert commands == expected
+
+
+@pytest.mark.parametrize(
+    'test_interface, test_int_type, test_update, expected', [
+        (an_if.Interface(
+            name='bond20', mode='routed', description='test', virtual=True,
+            attributes=an_if.InterfaceRouteAttributes(addresses=[
+                an_if.InterfaceAddress('198.18.0.1/32')
+            ], vrf=None),
+            admin_enabled=True, speed=1000, duplex='full', mtu=9000),
+         'bond', False,
+         [
+             'del bond bond20',
+             'add bond bond20',
+             'del bond bond20 link down',
+             'add bond bond20 mtu 9000',
+             'add bond bond20 alias "test"',
+             'add bond bond20 ip address 198.18.0.1/32',
+         ]),
+        (an_if.Interface(
+            name='swp7', mode='bridged', description='test', virtual=True,
+            attributes=an_if.InterfaceBridgeAttributes(
+                dot1q_enabled=True, dot1q_vids=[5, 6, 7, 8, 9, 10, 55]
+            ),
+            admin_enabled=False, speed=10000, duplex='full', mtu=1500),
+         'interface', False,
+         [
+             'del interface swp7',
+             'add interface swp7',
+             'add interface swp7 link down',
+             'add interface swp7 mtu 1500',
+             'add interface swp7 alias "test"',
+             'add interface swp7 link speed 10000',
+             'del interface swp7 bridge access',
+             'add interface swp7 bridge trunk vlans 5-10,55'
+         ]),
+        (an_if.Interface(
+            name='vlan55', mode='routed', description='test', virtual=True,
+            attributes=an_if.InterfaceRouteAttributes(addresses=[
+                an_if.InterfaceAddress('198.18.0.1/32')
+            ], vrf=None),
+            admin_enabled=False, speed=10000, duplex='full', mtu=1500),
+         'vlan', True,
+         [
+             'add vlan 55',
+             'add vlan 55 link down',
+             'add vlan 55 mtu 1500',
+             'add vlan 55 alias "test"',
+             'add vlan 55 ip address 198.18.0.1/32'
+         ]),
+    ])
+def test_generate_update_interface_commands(
+        test_interface, test_int_type, test_update, expected):
+    commands = if_task.generate_update_interface_commands(
+        test_interface, test_int_type, test_update)
+    assert commands == expected
+
+
+@pytest.mark.parametrize('test_interface, test_int_type, expected', [
+    (an_if.Interface(
+        name='vlan50', attributes=an_if.InterfaceRouteAttributes(
+            addresses=[
+                an_if.InterfaceAddress(address='198.18.0.1/24'),
+                an_if.InterfaceAddress(address='ea0e:a6b2:68d4:7b21::1/64')
+            ],
+            vrf=None),
+        description="test in default",
+        admin_enabled=True),
+     'vlan',
+     [
+         'add vlan 50',
+         'del vlan 50 link down',
+         'add vlan 50 alias "test in default"',
+         'add vlan 50 ip address 198.18.0.1/24',
+         'add vlan 50 ipv6 address ea0e:a6b2:68d4:7b21::1/64'
+     ]),
+    (an_if.Interface(
+        name='vlan78', attributes=an_if.InterfaceRouteAttributes(
+            addresses=[
+                an_if.InterfaceAddress(address='198.18.0.254/24'),
+                an_if.InterfaceAddress(address='198.18.0.1/24',
+                                       virtual=True, virtual_type='anycast'),
+                an_if.InterfaceAddress(address='ea0e:a6b2:68d4:7b21::1/64',
+                                       virtual=True, virtual_type='anycast')
+            ],
+            evpn_anycast_mac='20-00-00-AA-BB-CC',
+            vrf='green'),
+        description="test in green",
+        admin_enabled=False),
+     'vlan',
+     [
+         'add vlan 78',
+         'add vlan 78 link down',
+         'add vlan 78 alias "test in green"',
+         'add vlan 78 vrf green',
+         'add vlan 78 ip address 198.18.0.254/24',
+         'add vlan 78 ip address-virtual 20:00:00:aa:bb:cc 198.18.0.1/24',
+         'add vlan 78 ipv6 address-virtual 20:00:00:aa:bb:cc ea0e:a6b2:68d4:7b21::1/64'
      ]),
     (an_if.Interface(name='swp7',
                      attributes=an_if.InterfaceBridgeAttributes(
                          dot1q_enabled=False, dot1q_pvid=100
                      )),
+     'interface',
      [])
 ])
-def test_generate_create_commands(test_interface, expected):
-    commands = if_task.generate_create_commands(test_interface)
+def test_generate_create_commands(test_interface, test_int_type, expected):
+    commands = if_task.generate_create_commands(test_interface, test_int_type)
+    assert commands == expected
+
+
+@pytest.mark.parametrize(
+    'test_interface, test_int_type, test_update, expected', [
+        (an_if.Interface(
+            name='vlan7', mode='routed', description='test', virtual=True,
+            attributes=an_if.InterfaceRouteAttributes(addresses=[
+                an_if.InterfaceAddress('198.18.0.1/32')
+            ], vrf=None),
+            admin_enabled=True, speed=1000, duplex='full', mtu=9000),
+         'vlan', False,
+         [
+             'del vlan 7',
+             'add vlan 7',
+             'del vlan 7 link down',
+             'add vlan 7 mtu 9000',
+             'add vlan 7 alias "test"',
+             'add vlan 7 ip address 198.18.0.1/32',
+         ]),
+        (an_if.Interface(
+            name='bond20', mode='bridged', description='test', virtual=True,
+            attributes=an_if.InterfaceBridgeAttributes(
+                dot1q_enabled=True, dot1q_vids=[5, 6, 7, 8, 9, 10, 55]
+            ),
+            admin_enabled=False, speed=10000, duplex='full', mtu=1500),
+         'bond', False,
+         [
+             'del bond bond20',
+             'add bond bond20',
+             'add bond bond20 link down',
+             'add bond bond20 mtu 1500',
+             'add bond bond20 alias "test"',
+             'del bond bond20 bridge access',
+             'add bond bond20 bridge trunk vlans 5-10,55'
+         ]),
+        (an_if.Interface(
+            name='lo', mode='routed', description='test', virtual=True,
+            attributes=an_if.InterfaceRouteAttributes(addresses=[
+                an_if.InterfaceAddress('198.18.0.1/32')
+            ], vrf=None),
+            admin_enabled=True),
+         'loopback', False,
+         []),
+    ])
+def test_generate_update_commands(
+        test_interface, test_int_type, test_update, expected):
+    commands = if_task.generate_update_commands(
+        test_interface, test_int_type, test_update)
+    assert commands == expected
+
+
+@pytest.mark.parametrize('test_int_name, test_int_type, expected', [
+    ('bond20', 'bond', ['del bond bond20']),
+    ('swp6', 'interface', ['del interface swp6']),
+    ('vlan71', 'vlan', ['del vlan 71']),
+    ('lo', 'loopback', ['del loopback lo']),
+    ('bridge', 'bridge', ['del bridge bridge']),
+    ('vxlan70001', 'vxlan', ['del vxlan vxlan70001']),
+    ('green', 'vrf', ['del vrf green'])
+])
+def test_generate_delete_commands(test_int_name, test_int_type, expected):
+    commands = if_task.generate_delete_commands(test_int_name, test_int_type)
     assert commands == expected

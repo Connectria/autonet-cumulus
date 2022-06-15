@@ -1,3 +1,5 @@
+import logging
+
 from autonet.core.device import AutonetDevice
 from autonet.core import exceptions as exc
 from autonet.core.objects import interfaces as an_if
@@ -6,13 +8,12 @@ from autonet.core.objects import vlan as an_vlan
 from autonet.core.objects import vrf as an_vrf
 from autonet.core.objects import vxlan as an_vxlan
 from autonet.drivers.device.driver import DeviceDriver
-from dataclasses import dataclass, field
 from json import loads as json_loads
 from json.decoder import JSONDecodeError
 from pssh.clients import SSHClient
 from typing import Tuple
 
-from autonet_cumulus.commands import CommandResult, CommandResultSet, Commands
+from autonet_cumulus.commands import CommandResult, CommandResultSet
 from autonet_cumulus.tasks import interface as if_task
 
 
@@ -121,21 +122,38 @@ class CumulusDriver(DeviceDriver):
         """
         config_results = self._exec_net_commands(commands, False, False)
         commit_results = self._exec_net_commands(['commit'], False, False)
-        if commit_results.get('commit').failed:
+        commit_result = commit_results.get('commit')
+        if commit_result.stderr or commit_result.stdout.startswith('ERROR:'):
             self._exec_config_abort()
+            logging.error("An error was encountered with the following "
+                          f"config set: {commands}"
+                          f"STDOUT: \n{commit_result.stdout}"
+                          f"STDERR: \n{commit_result.stderr}")
             raise exc.AutonetException(f"Driver {self} encountered an error "
-                                   "attempting to apply the requested"
-                                   "configuration.  Pending configuration"
-                                   "rollback has been performed.")
+                                       "attempting to apply the requested"
+                                       "configuration.  Pending configuration"
+                                       "rollback has been performed.")
         config_results.append(commit_results.get('commit'))
 
         return config_results
 
-    def _interface_read(self, request_data: str = None, cache = True) -> [an_if.Interface]:
-        show_interface_command = 'show interface'
-        results = self._exec_net_commands([show_interface_command], cache=cache)
+    def _get_interface_type(self, int_name):
+        """
+        Gets the type of interface, vlan, bond, vrf, etc.
+
+        :param int_name: The name of the interface
+        :return:
+        """
+        show_int_command = f'show interface {int_name}'
+        results = self._exec_net_commands([show_int_command])
+        int_data = results.get(show_int_command)
+        return if_task.get_interface_type(int_name, int_data)
+
+    def _interface_read(self, request_data: str = None, cache=True) -> [an_if.Interface]:
+        show_int_command = 'show interface'
+        results = self._exec_net_commands([show_int_command], cache=cache)
         interfaces = if_task.get_interfaces(
-            results.get(show_interface_command).json,
+            results.get(show_int_command).json,
             int_name=request_data)
         if len(interfaces) == 1 and request_data:
             return interfaces[0]
@@ -145,12 +163,35 @@ class CumulusDriver(DeviceDriver):
     def _interface_create(self, request_data: an_if.Interface) -> an_if.Interface:
         # CL doesn't allow creation of loopbacks, and we're not going to support
         # sub interfaces at the moment, so here we are with VLANs or bust.
-        if not request_data.name.startswith('vlan'):
+        int_type = self._get_interface_type(request_data.name)
+        if not int_type == 'vlan':
             raise exc.DriverRequestError()
-        if request_data.name.startswith('vlan') and request_data.mode == 'bridged':
+        elif request_data.mode == 'bridged':
             raise exc.DeviceOperationUnsupported(
                 driver=self, device_id=self.device.device_id, operation="Bridge mode SVIs")
-        commands = if_task.generate_create_commands(request_data)
+
+        commands = if_task.generate_create_commands(request_data, int_type)
         self._exec_config_commands(commands)
         return self._interface_read(request_data.name, cache=False)
 
+    def _interface_update(self, request_data: an_if.Interface,
+                          update) -> an_if.Interface:
+        int_type = self._get_interface_type(request_data.name)
+        # Cumulus has a hard time switching interface modes. To
+        # work around this, the interface is deleted and recreated
+        # using a merge of the existing configuration and the
+        # configuration provided.  If the mode isn't changed then
+        # those steps are skipped.
+        current_config = self._interface_read(request_data.name)
+        if update and request_data.mode and request_data.mode != current_config.mode:
+            request_data = current_config.merge(request_data)
+            self._interface_delete(request_data.name)
+        # Pass to the command generator, and exec config.
+        commands = if_task.generate_update_commands(request_data, int_type, update)
+        self._exec_config_commands(commands)
+        return self._interface_read(request_data.name, cache=False)
+
+    def _interface_delete(self, request_data: str):
+        int_type = self._get_interface_type(request_data)
+        commands = if_task.generate_delete_commands(request_data, int_type)
+        self._exec_config_commands(commands)

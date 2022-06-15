@@ -5,8 +5,6 @@ from autonet.core.objects import interfaces as an_if
 from autonet.util.config_string import vlan_list_to_glob, glob_to_vlan_list
 from typing import Optional, Tuple, Union
 
-from autonet_cumulus.commands import CommandResultSet, Commands
-
 
 def parse_svi_name(name: str) -> int:
     """
@@ -57,7 +55,8 @@ def get_interface_type(int_name, int_data):
     Determine the type of interface represented by the interface name
     or in the case of some many virtual interface types, the interface
     data object.  Command will return a string value that can be used
-    in the NETd command string.
+    in the NETd command string.  If the interface data indicates the
+    interface does not exist at all, then None is returned.
 
     :param int_name: The interface name.
     :param int_data: The interface data object.
@@ -75,10 +74,33 @@ def get_interface_type(int_name, int_data):
         return 'loopback'
     if int_data['mode'] == 'Bridge/L2':
         return 'bridge'
+    # This is a bit of a last resort.  It'd be nice to always be able
+    # to determine the correct type but unfortunately CL is not at all
+    # consistent in this regard.
+    if int_data['mode'] == 'NotConfigured':
+        return None
     # We arrive here by process of elimination.  It's maybe a bit dodgy
     # but NETd will just reject whatever garbage we create, so it's
     # (mostly) safe.
     return 'vxlan'
+
+
+def get_base_command(int_name: str, int_type: str, action: str = 'add') -> str:
+    """
+    Generates the base command for interface configuration.
+
+    :param int_name: The interface name.
+    :param int_type: The interface type.
+    :param action: The action to take, `add` or `del`.
+    :return:
+    """
+    if action not in ['add', 'del']:
+        raise Exception("`action` must be `add` or `del`.")
+    if int_type == 'vlan':
+        vlan_id = parse_svi_name(int_name)
+        return f'{action} {int_type} {vlan_id}'
+    else:
+        return f'{action} {int_type} {int_name}'
 
 
 def get_interface_addresses(
@@ -212,12 +234,13 @@ def get_interfaces(show_int_data: dict, int_name: str = None) -> [an_if.Interfac
     for cur_int_name, int_data in show_int_data.items():
         # If a specific interface is requested we'll short circuit
         # until we find it.
+        int_type = get_interface_type(cur_int_name, int_data)
         if int_name and int_name != cur_int_name:
             continue
-        if cur_int_name.startswith('swp'):
+        if int_type in ['interface', 'bond']:
             interfaces.append(
                 get_interface(cur_int_name, int_data, None, vrf_list))
-        if cur_int_name.startswith('vlan'):
+        if int_type == 'vlan':
             subint_name = f"{int_name}-v0"
             if subint_name in show_int_data:
                 subint_data = show_int_data[subint_name]
@@ -226,27 +249,53 @@ def get_interfaces(show_int_data: dict, int_name: str = None) -> [an_if.Interfac
             interfaces.append(
                 get_interface(cur_int_name, int_data, subint_data, vrf_list)
             )
-        if 'mode' in int_data and int_data['mode'] == '802.3ad':
-            interfaces.append(get_interface(cur_int_name, int_data))
 
     return interfaces
 
 
-def generate_create_svi_commands(interface: an_if.Interface) -> [str]:
+def generate_bridge_commands(attributes: an_if.InterfaceBridgeAttributes,
+                             add_base: str, del_base: str) -> [str]:
     """
-    Generate a list of commands required to create an SVI.
+    Generate a list of commands to configure an interface for bridging.
 
-    :param interface: An :py:class:`Interface` object.
+    :param attributes: An :py:class:`InterfaceBridgeAttributes` object.
+    :param add_base: The base command returned from
+        :py:func:`get_base_command` for configuration adds.
+    :param del_base: The base command returned from
+        :py:func:`get_base_command` for configuration deletes.
     :return:
     """
-    vlan_id = parse_svi_name(interface.name)
-    prefix = f'add vlan {vlan_id}'
-    commands = [prefix]
-    if not interface.admin_enabled:
-        commands.append(f'{prefix} link down')
-    attributes: an_if.InterfaceRouteAttributes = interface.attributes
+    commands = []
+    if attributes.dot1q_enabled:
+        commands.append(f'{del_base} bridge access')
+        if attributes.dot1q_pvid:
+            commands.append(f'{add_base} bridge pvid {attributes.dot1q_pvid}')
+        if attributes.dot1q_vids:
+            vlan_glob = vlan_list_to_glob(attributes.dot1q_vids)
+            commands.append(f'{add_base} bridge trunk vlans {vlan_glob}')
+    else:
+        commands.append(f'{del_base} bridge trunk')
+        commands.append(f'{del_base} bridge pvid')
+        commands.append(f'{add_base} bridge access {attributes.dot1q_pvid}')
+
+    return commands
+
+
+def generate_route_commands(attributes: an_if.InterfaceRouteAttributes,
+                            add_base: str, del_base: str) -> [str]:
+    """
+    Generate a list of commands to configure an interface for routing.
+
+    :param attributes: An :py:class:`InterfaceRouteAttributes` object.
+    :param add_base: The base command returned from
+        :py:func:`get_base_command` for configuration adds.
+    :param del_base: The base command returned from
+        :py:func:`get_base_command` for configuration deletes.
+    :return:
+    """
+    commands = []
     if attributes.vrf:
-        commands.append(f'{prefix} vrf {attributes.vrf}')
+        commands.append(f'{add_base} vrf {attributes.vrf}')
     for address in attributes.addresses:
         af = 'ip' if address.family == 'ipv4' else 'ipv6'
         if address.virtual and address.virtual_type == 'anycast':
@@ -255,43 +304,140 @@ def generate_create_svi_commands(interface: an_if.Interface) -> [str]:
         else:
             address_type = 'address'
             mac = ''
-        commands.append(f'{prefix} {af} {address_type} {mac}{address.address}')
+        commands.append(f'{add_base} {af} {address_type} {mac}{address.address}')
+    return commands
+
+
+def generate_basic_interface_commands(interface: an_if.Interface,
+                                      add_base: str, del_base: str) -> [str]:
+    """
+    Generate a list of commands that will configure basic interface
+    attributes such as MTU and description.
+    :param interface:  An :py:class:`Interface` object.
+    :param add_base: The base command returned from
+        :py:func:`get_base_command` for configuration adds.
+    :param del_base: The base command returned from
+        :py:func:`get_base_command` for configuration deletes.
+    :return:
+    """
+    commands = [add_base]
+    if interface.admin_enabled is False:
+        commands.append(f'{add_base} link down')
+    if interface.admin_enabled is True:
+        commands.append(f'{del_base} link down')
     if interface.mtu:
-        commands.append(f'{prefix} mtu {interface.mtu}')
+        commands.append(f'{add_base} mtu {interface.mtu}')
     if interface.description:
-        commands.append(f'{prefix} alias "{interface.description}"')
+        commands.append(f'{add_base} alias "{interface.description}"')
+    if 'interface' in add_base and interface.speed:
+        commands.append(f'{add_base} link speed {interface.speed}')
+    return commands
+
+
+def generate_create_interface_commands(interface: an_if.Interface,
+                                       int_type: str) -> [str]:
+    """
+    Generate a list of commands required to create an interface
+    configuration from unconfigured state.
+
+    :param interface: An :py:class:`Interface` object.
+    :param int_type: An interface type returned from
+        :py:func`get_interface_type`.
+    :return:
+    """
+    add_base = get_base_command(interface.name, int_type, 'add')
+    del_base = get_base_command(interface.name, int_type, 'del')
+
+    commands = generate_basic_interface_commands(
+        interface, add_base, del_base)
+    if interface.mode == 'routed':
+        commands += generate_route_commands(
+            interface.attributes, add_base, del_base)
+    if interface.mode == 'bridged':
+        commands += generate_bridge_commands(
+            interface.attributes, add_base, del_base)
 
     return commands
 
 
-def generate_create_commands(interface: an_if.Interface) -> [str]:
+def generate_update_interface_commands(interface: an_if.Interface,
+                                       int_type: str,
+                                       update: bool = False) -> [str]:
+    """
+    Generate a list of commands required to update an interface.
+    :param interface: An :py:class:`interface` object.
+    :param int_type: An interface type returned from
+        :py:func`get_interface_type`.
+    :param update: Indicate that the interface is to be updated instead
+        of overwritten.
+    :return:
+    """
+    # If we are doing a replacement instead of an update, we just remove
+    # the interface configuration and then replace it.
+    del_base = get_base_command(interface.name, int_type, 'del')
+    add_base = get_base_command(interface.name, int_type, 'add')
+    if not update:
+        del_commands = [del_base]
+        create_commands = generate_create_interface_commands(interface,
+                                                             int_type)
+        return del_commands + create_commands
+    # Otherwise, we work through the interface object and generate a list of
+    # commands to perform an update.
+    else:
+        commands = generate_basic_interface_commands(
+            interface, add_base, del_base)
+
+        if interface.mode == 'bridged' and interface.attributes:
+            commands += generate_bridge_commands(
+                interface.attributes, add_base, del_base)
+        if interface.mode == 'routed' and interface.attributes:
+            commands += generate_route_commands(
+                interface.attributes, add_base, del_base)
+        return commands
+
+
+def generate_create_commands(interface: an_if.Interface,
+                             int_type: str) -> [str]:
     """
     Generate a list of commands required to create an interface.
 
     :param interface: An :py:class:`Interface` object.
+    :param int_type: The type of interface, vlan, bond, vrf, etc.
     :return:
     """
     # Currently, we only support creating SVIs.  We have this logic
     # fork here in anticipation of supporting other types later on.
-    if interface.name.startswith('vlan'):
-        return generate_create_svi_commands(interface)
+    if int_type == 'vlan':
+        return generate_create_interface_commands(interface, int_type)
 
     return []
 
 
-def generate_update_commands(interface: an_if.Interface, update: bool = False) -> [str]:
+def generate_update_commands(interface: an_if.Interface, int_type: str,
+                             update: bool = False) -> [str]:
     """
     generate a list of commands required to update an interface's
     configuration.
 
     :param interface: An :py:class:`Interface` object.
+    :param int_type: The type of interface, vlan, bond, vrf, etc.
     :param update: When True, unset interface properties will be
         ignored instead of overwritten with default values.
     :return:
     """
-    if interface.name.startswith('vlan'):
-        delete_command = f'del vlan {interface.name}'
-        return generate_create_svi_commands(interface)
-    if interface.name.startswith('swp'):
-        delete_command = f'del interface {interface.name}'
+    if int_type in ['vlan', 'interface', 'bond']:
+        return generate_update_interface_commands(interface, int_type, update)
+    else:
+        return []
 
+
+def generate_delete_commands(int_name: str, int_type: str) -> [str]:
+    """
+    Create a list of commands to destroy or reset and interface, as
+    appropriate.
+
+    :param int_name: The interface name.
+    :param int_type: The interface type.
+    :return:
+    """
+    return [get_base_command(int_name, int_type, 'del')]

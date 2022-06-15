@@ -1,7 +1,4 @@
-import json
 import pytest
-
-from autonet_cumulus.commands import CommandResult, CommandResultSet, Commands
 
 
 @pytest.fixture
@@ -9,9 +6,37 @@ def test_int_data(test_show_int_data, request):
     """
     Returns a tuple of `int_name, int_data, subint_data`
     """
+    unconfigured = {
+        'iface_obj': {
+            'lldp': None,
+            'native_vlan': None,
+            'dhcp_enabled': False,
+            'description': '',
+            'vlan': None,
+            'asic': None,
+            'mtu': '',
+            'lacp': {
+                'rate': '',
+                'sys_priority': '',
+                'partner_mac': '',
+                'bypass': ''},
+            'mac': '',
+            'vlan_filtering': False,
+            'min_links': '',
+            'members': {},
+            'counters': None,
+            'ip_address': {
+                'allentries': []},
+            'vlan_list': [],
+            'ip_neighbors': None},
+        'linkstate': 'UNK',
+        'summary': '',
+        'connector_type': 'Unknown',
+        'mode': 'NotConfigured',
+        'speed': 'N/A'}
     subint = f"{request.param}-v0"
     if not request.param or request.param not in test_show_int_data:
-        return request.param, None, None
+        return request.param, unconfigured, None
     elif subint in test_show_int_data:
         return (request.param,
                 test_show_int_data[request.param],
