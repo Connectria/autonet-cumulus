@@ -32,3 +32,13 @@ def generate_create_vrf_commands(vrf: an_vrf.VRF) -> [str]:
     :return:
     """
     return [f'add vrf {vrf.name}']
+
+
+def generate_delete_vrf_commands(vrf_name: str) -> [str]:
+    """
+    Generate a list of commands to delete a vrf.
+
+    :param vrf_name: The name of the VRF to be removed.
+    :return:
+    """
+    return [f'del vrf {vrf_name}']

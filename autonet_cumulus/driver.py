@@ -280,3 +280,7 @@ class CumulusDriver(DeviceDriver):
         commands = vrf_task.generate_create_vrf_commands(request_data)
         self._exec_config_commands(commands)
         return self._vrf_read(request_data.name)
+
+    def _vrf_delete(self, request_data: str) -> None:
+        commands = vrf_task.generate_delete_vrf_commands(request_data)
+        self._exec_config_commands(commands)
