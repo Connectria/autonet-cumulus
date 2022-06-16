@@ -32,3 +32,13 @@ VLANs
     used for binding to EVPN L3VNIs.  VLAN operations that attempt to
     create or delete these VLANs will raise an exception.  See
     :doc:`configuration` for more information.
+
+VRFs
+----
+
+  * Because Cumulus Linux does not support any BGP-VPN functionality
+    the VRF create and delete functions ignore any BGP-VPN related
+    configuration information, route-targets, etc.
+
+  * Because Cumulus Linux does not support any BGP-VPN functionality
+    there is no driver support for VRF update functions.
