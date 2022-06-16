@@ -20,6 +20,7 @@ from typing import List, Tuple, Union
 from autonet_cumulus.commands import CommandResult, CommandResultSet
 from autonet_cumulus.tasks import interface as if_task
 from autonet_cumulus.tasks import vlan as vlan_task
+from autonet_cumulus.tasks import vrf as vrf_task
 
 cl_opts = [
     StringOption('dynamic_vlans', default='4000-4094'),
@@ -267,3 +268,15 @@ class CumulusDriver(DeviceDriver):
             request_data, self.bridge)
 
         self._exec_config_commands(commands)
+
+    def _vrf_read(self, request_data: str = None) -> Union[List[an_vrf.VRF], an_vrf.VRF]:
+        ip_vrf_data, _ = self._exec_raw_command('ip -o link show type vrf')
+        vrfs = vrf_task.get_vrfs(ip_vrf_data, request_data)
+        if request_data and len(vrfs) == 1:
+            return vrfs[0]
+        return vrfs
+
+    def _vrf_create(self, request_data: an_vrf.VRF) -> an_vrf.VRF:
+        commands = vrf_task.generate_create_vrf_commands(request_data)
+        self._exec_config_commands(commands)
+        return self._vrf_read(request_data.name)

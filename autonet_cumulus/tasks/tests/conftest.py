@@ -893,3 +893,13 @@ def test_vlan_data():
             {'flags': ['PVID', 'Egress Untagged'],
              'vlan': 72,
              'vni': 70002}]}
+
+
+@pytest.fixture
+def test_ip_vrf_data():
+    return '''12: TestCust1-Prod: <NOARP,MASTER,UP,LOWER_UP> mtu 65536 qdisc noqueue state UP mode DEFAULT group default qlen 1000\    link/ether f2:01:34:39:d1:47 brd ff:ff:ff:ff:ff:ff
+24: connmgmt: <NOARP,MASTER,UP,LOWER_UP> mtu 65536 qdisc noqueue state UP mode DEFAULT group default qlen 1000\    link/ether 62:2b:5d:02:2d:ac brd ff:ff:ff:ff:ff:ff
+26: green: <NOARP,MASTER,UP,LOWER_UP> mtu 65536 qdisc noqueue state UP mode DEFAULT group default qlen 1000\    link/ether c2:57:63:bd:7e:5b brd ff:ff:ff:ff:ff:ff
+30: mgmt: <NOARP,MASTER,UP,LOWER_UP> mtu 65536 qdisc noqueue state UP mode DEFAULT group default qlen 1000\    link/ether de:ae:4e:ea:6a:0a brd ff:ff:ff:ff:ff:ff
+32: vrf-red: <NOARP,MASTER,UP,LOWER_UP> mtu 65536 qdisc noqueue state UP mode DEFAULT group default qlen 1000\    link/ether e6:97:d1:d5:96:35 brd ff:ff:ff:ff:ff:ff
+'''
