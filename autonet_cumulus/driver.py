@@ -1,4 +1,5 @@
 import logging
+import re
 
 from autonet.config import config
 from autonet.core.device import AutonetDevice
@@ -65,8 +66,10 @@ class CumulusDriver(DeviceDriver):
                 'bridge_name', config.cumulus_linux.bridge_name):
             return bridge
         # Otherwise, attempt to figure it out.
-        stdout, _ = self._exec_raw_command('ip -j link show type bridge')
-        return json_loads(stdout)[0]['ifname']
+        stdout, _ = self._exec_raw_command('ip -o link show type bridge')
+        regex = r'^(?P<ifidx>[\d]*): (?P<ifname>[\S]*):'
+        matches = re.search(regex, stdout)
+        return matches.group('ifname')
 
     @staticmethod
     def _format_net_command(command: str, json: bool) -> str:
