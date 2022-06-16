@@ -1,5 +1,6 @@
 import logging
 
+from autonet.config import config
 from autonet.core.device import AutonetDevice
 from autonet.core import exceptions as exc
 from autonet.core.objects import interfaces as an_if
@@ -8,13 +9,22 @@ from autonet.core.objects import vlan as an_vlan
 from autonet.core.objects import vrf as an_vrf
 from autonet.core.objects import vxlan as an_vxlan
 from autonet.drivers.device.driver import DeviceDriver
+from autonet.util.config_string import glob_to_vlan_list
+from conf_engine.options import StringOption
 from json import loads as json_loads
 from json.decoder import JSONDecodeError
 from pssh.clients import SSHClient
-from typing import Tuple
+from typing import List, Tuple, Union
 
 from autonet_cumulus.commands import CommandResult, CommandResultSet
 from autonet_cumulus.tasks import interface as if_task
+from autonet_cumulus.tasks import vlan as vlan_task
+
+cl_opts = [
+    StringOption('dynamic_vlans', default='4000-4094'),
+    StringOption('bridge_name', default='')
+]
+config.register_options(cl_opts, 'cumulus_linux')
 
 
 class CumulusDriver(DeviceDriver):
@@ -25,7 +35,38 @@ class CumulusDriver(DeviceDriver):
             password=device.credentials.password
         )
         self._result_cache = CommandResultSet()
+        self._device = device
         super().__init__(device)
+
+    @property
+    def dynamic_vlans(self) -> [int]:
+        """
+        A list of integers that represent VLAN IDs that have been
+        reserved for dynamic allocation.
+
+        :return:
+        """
+        vlan_glob = self.device.metadata.get(
+            'dynamic_vlans', config.cumulus_linux.dynamic_vlans)
+        return glob_to_vlan_list(vlan_glob)
+
+    @property
+    def bridge(self) -> str:
+        """
+        Return the name of the bridge device.  If the bridge name is
+        explicitly configured, that will be used.  Otherwise, the
+        bridge name will be inferred from the first bridge defined.
+
+        :return:
+        """
+        # Try to get it from metadata, then default to config if it is
+        # not there.
+        if bridge := self.device.metadata.get(
+                'bridge_name', config.cumulus_linux.bridge_name):
+            return bridge
+        # Otherwise, attempt to figure it out.
+        stdout, _ = self._exec_raw_command('ip -j link show type bridge')
+        return json_loads(stdout)[0]['ifname']
 
     @staticmethod
     def _format_net_command(command: str, json: bool) -> str:
@@ -194,4 +235,32 @@ class CumulusDriver(DeviceDriver):
     def _interface_delete(self, request_data: str):
         int_type = self._get_interface_type(request_data)
         commands = if_task.generate_delete_commands(request_data, int_type)
+        self._exec_config_commands(commands)
+
+    def _bridge_vlan_read(self, request_data: Union[str, int]) -> Union[List[an_vlan.VLAN], an_vlan.VLAN]:
+        vlan_data_command = 'show bridge vlan'
+        vlan_data_results = self._exec_net_commands([vlan_data_command])
+        vlan_data = vlan_data_results.get(vlan_data_command).json
+        vlans = vlan_task.get_vlans(vlan_data, self.bridge, self.dynamic_vlans, request_data)
+        if request_data and len(vlans) == 1:
+            return vlans[0]
+        else:
+            return vlans
+
+    def _bridge_vlan_create(self, request_data: an_vlan.VLAN) -> an_vlan.VLAN:
+        if request_data.id in self.dynamic_vlans:
+            raise exc.DriverOperationUnsupported(
+                self, "Requested VLAN ID is reserved.")
+        commands = vlan_task.generate_create_vlan_commands(
+            request_data, self.bridge)
+        self._exec_config_commands(commands)
+        return an_vlan.VLAN(id=request_data.id, admin_enabled=True)
+
+    def _bridge_vlan_delete(self, request_data: str) -> None:
+        if int(request_data) in self.dynamic_vlans:
+            raise exc.DriverOperationUnsupported(
+                self, "Requested VLAN ID is reserved.")
+        commands = vlan_task.generate_delete_vlan_commands(
+            request_data, self.bridge)
+
         self._exec_config_commands(commands)

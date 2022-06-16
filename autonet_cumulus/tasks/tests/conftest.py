@@ -1,6 +1,16 @@
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def flush_config():
+    """
+    Used to flush any cached config changes at the end of the test.
+    """
+    yield
+    from autonet_cumulus.driver import config
+    config.flush_cache()
+
+
 @pytest.fixture
 def test_int_data(test_show_int_data, request):
     """
@@ -846,3 +856,40 @@ def test_vrf_list():
         'mgmt',
         'vrf-red'
     ]
+
+
+@pytest.fixture
+def test_vlan_data():
+    return {
+        'bridge': [
+            {'flags': [],
+             'vlan': 71,
+             'vlanEnd': 72},
+            {'vlan': 88},
+            {'vlan': 100},
+            {'vlan': 250},
+            {'vlan': 4001},
+            {'vlan': 4074},
+            {'vlan': 4086}],
+        'swp5': [
+            {'flags': ['PVID', 'Egress Untagged'],
+             'vlan': 71}],
+        'swp6': [
+            {'flags': ['PVID', 'Egress Untagged'],
+             'vlan': 72}],
+        'vxlan111001': [
+            {'flags': ['PVID', 'Egress Untagged'],
+             'vlan': 4074,
+             'vni': 111001}],
+        'vxlan70000': [
+            {'flags': ['PVID', 'Egress Untagged'],
+             'vlan': 4086,
+             'vni': 70000}],
+        'vxlan70001': [
+            {'flags': ['PVID', 'Egress Untagged'],
+             'vlan': 71,
+             'vni': 70001}],
+        'vxlan70002': [
+            {'flags': ['PVID', 'Egress Untagged'],
+             'vlan': 72,
+             'vni': 70002}]}

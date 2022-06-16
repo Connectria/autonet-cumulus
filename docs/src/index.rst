@@ -10,7 +10,7 @@ Cumulus Linux.
    :maxdepth: 2
    :caption: Contents:
 
-   config_notes.rst
+   configuration.rst
    driver_notes.rst
    autoapi/index.rst
 
