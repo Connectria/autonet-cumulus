@@ -3,17 +3,19 @@ from typing import Union
 
 
 def get_vlans(vlan_data: dict, bridge: str, dynamic_vlans: [int],
-              vlan_id: Union[str, int] = None,
+              vlan_id: Union[str, int] = None, show_dynamic: bool = False,
               ) -> [an_vlan.VLAN]:
     """
     Returns a list of :py:class:`VLAN` objects.  VLAN IDs
-    that fall in the range of reserved VLANs will be omitted.
+    that fall in the range of reserved VLANs will be omitted by
+    default.
 
     :param vlan_data: Output from the :code:`show bridge vlan` command.
     :param bridge: The primary bridge name.
     :param dynamic_vlans: A list of VLAN IDs reserved for dynamic
         allocation.
     :param vlan_id: Filter results for the given VLAN ID.
+    :param show_dynamic: Include dynamic VLANs in the response.
     :return:
     """
     vlan_id = int(vlan_id) if vlan_id else None
@@ -22,7 +24,7 @@ def get_vlans(vlan_data: dict, bridge: str, dynamic_vlans: [int],
         start = vlan_obj['vlan']
         stop = int(vlan_obj.get('vlanEnd', start)) + 1
         for vid in range(start, stop):
-            if vid in dynamic_vlans:
+            if vid in dynamic_vlans and not show_dynamic:
                 continue
             if vlan_id and vid != vlan_id:
                 continue

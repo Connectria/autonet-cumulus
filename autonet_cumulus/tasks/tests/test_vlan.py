@@ -5,21 +5,34 @@ from autonet.core.objects import vlan as an_vlan
 from autonet_cumulus.tasks import vlan as vlan_task
 
 
-@pytest.mark.parametrize('test_vlan_id, expected', [
-    (88, [an_vlan.VLAN(id=88, admin_enabled=True)]),
-    (None, [
+@pytest.mark.parametrize('test_vlan_id, test_show_dynamic, expected', [
+    (88, False, [an_vlan.VLAN(id=88, admin_enabled=True)]),
+    (None, False, [
         an_vlan.VLAN(id=71, admin_enabled=True),
         an_vlan.VLAN(id=72, admin_enabled=True),
         an_vlan.VLAN(id=88, admin_enabled=True),
         an_vlan.VLAN(id=100, admin_enabled=True),
         an_vlan.VLAN(id=250, admin_enabled=True),
     ]),
-    (4074, [])
+    (None, True, [
+        an_vlan.VLAN(id=71, admin_enabled=True),
+        an_vlan.VLAN(id=72, admin_enabled=True),
+        an_vlan.VLAN(id=88, admin_enabled=True),
+        an_vlan.VLAN(id=100, admin_enabled=True),
+        an_vlan.VLAN(id=250, admin_enabled=True),
+        an_vlan.VLAN(id=4001, admin_enabled=True),
+        an_vlan.VLAN(id=4074, admin_enabled=True),
+        an_vlan.VLAN(id=4086, admin_enabled=True)
+    ]),
+    (4074, False, []),
+    (4074, True, [an_vlan.VLAN(id=4074, admin_enabled=True)])
 ])
-def test_get_vlans(test_vlan_data, test_vlan_id, expected):
+def test_get_vlans(test_vlan_data, test_vlan_id,
+                   test_show_dynamic, expected):
     vlans = vlan_task.get_vlans(test_vlan_data, 'bridge',
                                 [x for x in range(4000, 4096)],
-                                test_vlan_id)
+                                test_vlan_id,
+                                test_show_dynamic)
     assert vlans == expected
 
 
