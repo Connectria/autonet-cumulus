@@ -1,4 +1,5 @@
 import logging
+import random
 import re
 
 from autonet.config import config
@@ -14,13 +15,15 @@ from autonet.util.config_string import glob_to_vlan_list
 from conf_engine.options import StringOption
 from json import loads as json_loads
 from json.decoder import JSONDecodeError
+from ipaddress import ip_interface
 from pssh.clients import SSHClient
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 from autonet_cumulus.commands import CommandResult, CommandResultSet
 from autonet_cumulus.tasks import interface as if_task
 from autonet_cumulus.tasks import vlan as vlan_task
 from autonet_cumulus.tasks import vrf as vrf_task
+from autonet_cumulus.tasks import vxlan as vxlan_task
 
 cl_opts = [
     StringOption('dynamic_vlans', default='4000-4094'),
@@ -71,6 +74,24 @@ class CumulusDriver(DeviceDriver):
         regex = r'^(?P<ifidx>[\d]*): (?P<ifname>[\S]*):'
         matches = re.search(regex, stdout)
         return matches.group('ifname')
+
+    @property
+    def loopback_address(self):
+        """
+        Returns the first IPv4 /32 address attached to the loopback
+        interface. An exception is raised if the loopback cannot
+        be found.
+
+        :return:
+        """
+        show_int_command = 'show interface lo'
+        show_int_result = self._exec_net_commands([show_int_command])
+        show_int_data = show_int_result.get(show_int_command).json
+        for address in show_int_data['iface_obj']['ip_address']['allentries']:
+            ip_int = ip_interface(address)
+            if ip_int.version == 4 and not ip_int.is_loopback:
+                return str(ip_int.ip)
+        raise Exception("Could not find loopback address.")
 
     @staticmethod
     def _format_net_command(command: str, json: bool) -> str:
@@ -182,7 +203,7 @@ class CumulusDriver(DeviceDriver):
 
         return config_results
 
-    def _get_interface_type(self, int_name):
+    def _get_interface_type(self, int_name) -> str:
         """
         Gets the type of interface, vlan, bond, vrf, etc.
 
@@ -193,6 +214,52 @@ class CumulusDriver(DeviceDriver):
         results = self._exec_net_commands([show_int_command])
         int_data = results.get(show_int_command)
         return if_task.get_interface_type(int_name, int_data)
+
+    def _get_vxlan_data(self) -> dict:
+        """
+        Collect data about VXLAN configuration from several commands
+        and return a parsed object containing information that can be
+        used by various other methods.
+
+        :return:
+        """
+        evpn_vni_command = 'show evpn vni'
+        bgp_evpn_command = 'show bgp evpn vni'
+        vlan_data_command = 'show bridge vlan'
+        commands = [evpn_vni_command, bgp_evpn_command, vlan_data_command]
+        results = self._exec_net_commands(commands)
+        return vxlan_task.parse_vxlan_data(
+            results.get(evpn_vni_command).json,
+            results.get(bgp_evpn_command).json,
+            results.get(vlan_data_command).json
+        )
+
+    def _get_dynamic_vlan(self) -> int:
+        """
+        Get a vlan from the configured dynamic vlan pool.
+
+        :return:
+        """
+        vlan_objects = self._bridge_vlan_read(show_dynamic=True)
+        used_vlans = [vlan.id for vlan in vlan_objects]
+        unused_dynamic_vlans = [vlan for vlan in self.dynamic_vlans
+                                if vlan not in used_vlans]
+        return random.choice(unused_dynamic_vlans)
+
+    def _get_bgp_evpn_data(self) -> dict:
+        """
+        Collects the BGP ASN and router ID for the EVPN address family
+        and returns them in a dictionary.
+
+        :return:
+        """
+        show_bgp_command = 'show bgp evpn summary'
+        show_bgp_result = self._exec_net_commands([show_bgp_command])
+        evpn_data = show_bgp_result.get(show_bgp_command).json
+        return {
+            'asn': evpn_data['as'],
+            'rid': evpn_data['routerId']
+        }
 
     def _interface_read(self, request_data: str = None, cache=True) -> [an_if.Interface]:
         show_int_command = 'show interface'
@@ -241,11 +308,13 @@ class CumulusDriver(DeviceDriver):
         commands = if_task.generate_delete_commands(request_data, int_type)
         self._exec_config_commands(commands)
 
-    def _bridge_vlan_read(self, request_data: Union[str, int]) -> Union[List[an_vlan.VLAN], an_vlan.VLAN]:
+    def _bridge_vlan_read(self, request_data: Optional[Union[str, int]] = None,
+                          show_dynamic: bool = False) -> Union[List[an_vlan.VLAN], an_vlan.VLAN]:
         vlan_data_command = 'show bridge vlan'
         vlan_data_results = self._exec_net_commands([vlan_data_command])
         vlan_data = vlan_data_results.get(vlan_data_command).json
-        vlans = vlan_task.get_vlans(vlan_data, self.bridge, self.dynamic_vlans, request_data)
+        vlans = vlan_task.get_vlans(vlan_data, self.bridge, self.dynamic_vlans,
+                                    request_data, show_dynamic)
         if request_data and len(vlans) == 1:
             return vlans[0]
         else:
@@ -284,3 +353,24 @@ class CumulusDriver(DeviceDriver):
     def _vrf_delete(self, request_data: str) -> None:
         commands = vrf_task.generate_delete_vrf_commands(request_data)
         self._exec_config_commands(commands)
+
+    def _tunnels_vxlan_read(self, request_data: str = None) -> Union[List[an_vxlan.VXLAN], an_vxlan.VXLAN]:
+        vxlan_data = self._get_vxlan_data()
+        vxlans = vxlan_task.get_vxlans(vxlan_data, request_data)
+        if request_data and len(vxlans) == 1:
+            return vxlans[0]
+        return vxlans
+
+    def _tunnels_vxlan_create(self, request_data: an_vxlan.VXLAN) -> an_vxlan.VXLAN:
+        dynamic_vlan = self._get_dynamic_vlan() if request_data.layer == 3 else None
+        bgp_data = self._get_bgp_evpn_data()
+
+        # We default to no ip forwarding and enable it only if the VLAN exists.
+        ip_forward = False
+        if request_data.layer == 2 and self._bridge_vlan_read(request_data.bound_object_id):
+            ip_forward = True
+
+        commands = vxlan_task.generate_create_vxlan_commands(
+            request_data, self.loopback_address, bgp_data, dynamic_vlan, ip_forward)
+        self._exec_config_commands(commands)
+        return self._tunnels_vxlan_read(str(request_data.id))

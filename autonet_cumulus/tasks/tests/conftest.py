@@ -1,5 +1,7 @@
 import pytest
 
+from autonet.core.objects import vxlan as an_vxlan
+
 
 @pytest.fixture(autouse=True)
 def flush_config():
@@ -896,6 +898,141 @@ def test_vlan_data():
 
 
 @pytest.fixture
+def test_evpn_vni_data():
+    return {
+        '70002': {
+            'vni': 70002,
+            'type': 'L2',
+            'vxlanIf': 'vxlan70002',
+            'numMacs': 3,
+            'numArpNd': 5,
+            'numRemoteVteps': 3,
+            'tenantVrf': 'TestCust1-Prod',
+            'remoteVteps': [
+                '192.168.0.101',
+                '192.168.0.105',
+                '192.168.0.102'
+            ]
+        },
+        '70001': {
+            'vni': 70001,
+            'type': 'L2',
+            'vxlanIf': 'vxlan70001',
+            'numMacs': 4,
+            'numArpNd': 4,
+            'numRemoteVteps': 3,
+            'tenantVrf': 'TestCust1-Prod',
+            'remoteVteps': [
+                '192.168.0.101',
+                '192.168.0.16',
+                '192.168.0.105'
+            ]
+        },
+        '111001': {
+            'vni': 111001,
+            'vxlanIf': 'vxlan111001',
+            'numMacs': 0,
+            'numArpNd': 0,
+            'numRemoteVteps': 'n/a',
+            'type': 'L3',
+            'tenantVrf': 'green'
+        },
+        '70000': {
+            'vni': 70000,
+            'vxlanIf': 'vxlan70000',
+            'numMacs': 1,
+            'numArpNd': 1,
+            'numRemoteVteps': 'n/a',
+            'type': 'L3',
+            'tenantVrf': 'TestCust1-Prod'
+        }
+    }
+
+
+@pytest.fixture
+def test_bgp_evpn_data():
+    return {
+        'advertiseGatewayMacip': 'Disabled',
+        'advertiseSviMacIp': 'Disabled',
+        'advertiseAllVnis': 'Enabled',
+        'flooding': 'Head-end replication',
+        'numVnis': 4,
+        'numL2Vnis': 2,
+        'numL3Vnis': 2,
+        '70002': {
+            'vni': 70002,
+            'type': 'L2',
+            'inKernel': 'True',
+            'rd': '192.168.0.106:2',
+            'originatorIp': '192.168.0.106',
+            'mcastGroup': '0.0.0.0',
+            'advertiseGatewayMacip': 'Disabled',
+            'advertiseSviMacIp': 'Disabled',
+            'importRTs': [
+                '65002:70002'
+            ],
+            'exportRTs': [
+                '65002:70002'
+            ]
+        },
+        '70001': {
+            'vni': 70001,
+            'type': 'L2',
+            'inKernel': 'True',
+            'rd': '192.168.0.106:4',
+            'originatorIp': '192.168.0.106',
+            'mcastGroup': '0.0.0.0',
+            'advertiseGatewayMacip': 'Disabled',
+            'advertiseSviMacIp': 'Disabled',
+            'importRTs': [
+                '65002:70001'
+            ],
+            'exportRTs': [
+                '65002:70001'
+            ]
+        },
+        '70000': {
+            'vni': 70000,
+            'type': 'L3',
+            'inKernel': 'True',
+            'originatorIp': '192.168.0.106',
+            'rd': '192.168.0.106:5',
+            'advertiseGatewayMacip': 'n/a',
+            'advertiseSviMacIp': 'n/a',
+            'advertisePip': 'Enabled',
+            'sysIP': '192.168.0.106',
+            'sysMAC': '0c:33:0e:25:52:05',
+            'rmac': '0c:33:0e:25:52:05',
+            'importRTs': [
+                '65002:70000'
+            ],
+            'exportRTs': [
+                '65002:70000'
+            ]
+        },
+        '111001': {
+            'vni': 111001,
+            'type': 'L3',
+            'inKernel': 'True',
+            'originatorIp': '192.168.0.106',
+            'rd': '192.168.0.106:6',
+            'advertiseGatewayMacip': 'n/a',
+            'advertiseSviMacIp': 'n/a',
+            'advertisePip': 'Enabled',
+            'sysIP': '192.168.0.106',
+            'sysMAC': '0c:33:0e:25:52:05',
+            'rmac': '0c:33:0e:25:52:05',
+            'importRTs': [
+                '65002:111001'
+            ],
+            'exportRTs': [
+                '65002:111001'
+            ]
+        }
+    }
+
+
+@pytest.fixture
 def test_ip_vrf_data():
     return '''12: TestCust1-Prod: <NOARP,MASTER,UP,LOWER_UP> mtu 65536 qdisc noqueue state UP mode DEFAULT group default qlen 1000\    link/ether f2:01:34:39:d1:47 brd ff:ff:ff:ff:ff:ff
 24: connmgmt: <NOARP,MASTER,UP,LOWER_UP> mtu 65536 qdisc noqueue state UP mode DEFAULT group default qlen 1000\    link/ether 62:2b:5d:02:2d:ac brd ff:ff:ff:ff:ff:ff
@@ -903,3 +1040,40 @@ def test_ip_vrf_data():
 30: mgmt: <NOARP,MASTER,UP,LOWER_UP> mtu 65536 qdisc noqueue state UP mode DEFAULT group default qlen 1000\    link/ether de:ae:4e:ea:6a:0a brd ff:ff:ff:ff:ff:ff
 32: vrf-red: <NOARP,MASTER,UP,LOWER_UP> mtu 65536 qdisc noqueue state UP mode DEFAULT group default qlen 1000\    link/ether e6:97:d1:d5:96:35 brd ff:ff:ff:ff:ff:ff
 '''
+
+
+@pytest.fixture()
+def test_vxlan_data():
+    return {
+        70000: {'layer': 3,
+                'vxlan': an_vxlan.VXLAN(
+                    id=70000, source_address='192.168.0.106', layer=3,
+                    import_targets=['65002:70000'],
+                    export_targets=['65002:70000'],
+                    route_distinguisher='192.168.0.106:5',
+                    bound_object_id='TestCust1-Prod'),
+                'vxlan_if': 'vxlan70000'},
+        70001: {'layer': 2,
+                'vxlan': an_vxlan.VXLAN(
+                    id=70001, source_address='192.168.0.106', layer=2,
+                    import_targets=['65002:70001'],
+                    export_targets=['65002:70001'],
+                    route_distinguisher='192.168.0.106:4',
+                    bound_object_id=71),
+                'vxlan_if': 'vxlan70001'},
+        70002: {'layer': 2,
+                'vxlan': an_vxlan.VXLAN(
+                    id=70002, source_address='192.168.0.106', layer=2,
+                    import_targets=['65002:70002'],
+                    export_targets=['65002:70002'],
+                    route_distinguisher='192.168.0.106:2',
+                    bound_object_id=72),
+                'vxlan_if': 'vxlan70002'},
+        111001: {'layer': 3,
+                 'vxlan': an_vxlan.VXLAN(
+                     id=111001, source_address='192.168.0.106', layer=3,
+                     import_targets=['65002:111001'],
+                     export_targets=['65002:111001'],
+                     route_distinguisher='192.168.0.106:6',
+                     bound_object_id='green'),
+                 'vxlan_if': 'vxlan111001'}}
