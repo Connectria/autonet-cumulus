@@ -469,6 +469,7 @@ def test_generate_basic_interface_commands(test_interface, expected):
          'add vlan 50',
          'del vlan 50 link down',
          'add vlan 50 alias "test in default"',
+         'del vlan 50 ip forward off',
          'add vlan 50 ip address 198.18.0.1/24',
          'add vlan 50 ipv6 address ea0e:a6b2:68d4:7b21::1/64'
      ]),
@@ -490,6 +491,7 @@ def test_generate_basic_interface_commands(test_interface, expected):
          'add vlan 50',
          'add vlan 50 link down',
          'add vlan 50 alias "test in green"',
+         'del vlan 50 ip forward off',
          'add vlan 50 vrf green',
          'add vlan 50 ip address 198.18.0.254/24',
          'add vlan 50 ip address-virtual 20:00:00:aa:bb:cc 198.18.0.1/24',
@@ -574,6 +576,7 @@ def test_generate_update_interface_commands(
          'add vlan 50',
          'del vlan 50 link down',
          'add vlan 50 alias "test in default"',
+         'del vlan 50 ip forward off',
          'add vlan 50 ip address 198.18.0.1/24',
          'add vlan 50 ipv6 address ea0e:a6b2:68d4:7b21::1/64'
      ]),
@@ -595,6 +598,7 @@ def test_generate_update_interface_commands(
          'add vlan 78',
          'add vlan 78 link down',
          'add vlan 78 alias "test in green"',
+         'del vlan 78 ip forward off',
          'add vlan 78 vrf green',
          'add vlan 78 ip address 198.18.0.254/24',
          'add vlan 78 ip address-virtual 20:00:00:aa:bb:cc 198.18.0.1/24',
@@ -627,6 +631,7 @@ def test_generate_create_commands(test_interface, test_int_type, expected):
              'del vlan 7 link down',
              'add vlan 7 mtu 9000',
              'add vlan 7 alias "test"',
+             'del vlan 7 ip forward off',
              'add vlan 7 ip address 198.18.0.1/32',
          ]),
         (an_if.Interface(

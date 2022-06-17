@@ -354,6 +354,10 @@ def generate_create_interface_commands(interface: an_if.Interface,
     commands = generate_basic_interface_commands(
         interface, add_base, del_base)
     if interface.mode == 'routed':
+        # An SVI may have had IP forwarding disabled as part of a
+        # VXLAN binding.  We turn it back on here.
+        if int_type == 'vlan':
+            commands.append(f'{del_base} ip forward off')
         commands += generate_route_commands(
             interface.attributes, add_base, del_base)
     if interface.mode == 'bridged':
