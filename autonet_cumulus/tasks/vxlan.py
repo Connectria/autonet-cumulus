@@ -25,15 +25,18 @@ def parse_vxlan_data(evpn_vni_data: dict, bgp_vni_data: dict,
         if evpn_vni_datum['type'] == 'L2':
             layer = 2
             bound_object_id = vlan_data[evpn_vni_datum['vxlanIf']][0]['vlan']
+            l3_vxlan_vlan = None
         elif evpn_vni_datum['type'] == 'L3':
             layer = 3
             bound_object_id = evpn_vni_datum['tenantVrf']
+            l3_vxlan_vlan = vlan_data[evpn_vni_datum['vxlanIf']][0]['vlan']
         else:
             # Maybe not fully configured?
             continue
         vxlan_data[int(evpn_vni)] = {
             "layer": layer,
             "vxlan_if": evpn_vni_datum['vxlanIf'],
+            "l3_vxlan_vlan": l3_vxlan_vlan,
             "vxlan": an_vxlan.VXLAN(
                 id=int(evpn_vni),
                 layer=layer,
@@ -108,7 +111,7 @@ def generate_create_l2_vxlan_commands(vxlan: an_vxlan.VXLAN, bgp_data: dict,
         f'add bgp l2vpn evpn vni {vxlan.id} rd {vxlan.route_distinguisher}'
     ]
     if not ip_forward:
-        commands.append(f'add vlan {vxlan.bound_object_id} ip forward off',)
+        commands.append(f'add vlan {vxlan.bound_object_id} ip forward off', )
     return commands
 
 
@@ -172,3 +175,69 @@ def generate_create_vxlan_commands(
 
     commands += generate_vxlan_rt_commands(vxlan, bgp_data['asn'])
     return commands
+
+
+def generate_delete_l2_vxlan_commands(vxlan_datum: dict) -> [str]:
+    """
+    Generate a list of commands required to tear down an L2 VXLAN
+    tunnel.
+
+    :param vxlan_datum: The individual vxlan_data object from
+        :py:func:`parse_vxlan_data` that represents the VXLAN tunnel.
+    :return:
+    """
+    vni = vxlan_datum['vxlan'].id
+    vxlan_if = vxlan_datum["vxlan_if"]
+    return [
+        f'del bgp l2vpn evpn vni {vni}',
+        f'del vxlan {vxlan_if}'
+    ]
+
+
+def generate_delete_l3_vxlan_commands(vxlan_datum: dict) -> [str]:
+    """
+    Generate a list of commands required to tear down an L3 VXLAN
+    tunnel.
+
+    :param vxlan_datum: The individual vxlan_data object from
+        :py:func:`parse_vxlan_data` that represents the VXLAN tunnel.
+    :return:
+    """
+    # Setup some vars for easier to read code below.
+    vrf = vxlan_datum['vxlan'].bound_object_id
+    vni = vxlan_datum['vxlan'].id
+    vxlan_if = vxlan_datum["vxlan_if"]
+    rd = vxlan_datum['vxlan'].route_distinguisher
+    # Destroy basic BGP configuration.
+    commands = [
+        f'del bgp vrf {vrf} l2vpn evpn vni {vni}',
+        f'del bgp vrf {vrf} l2vpn evpn advertise ipv4 unicast',
+        f'del bgp vrf {vrf} l2vpn evpn advertise ipv6 unicast',
+        f'del bgp vrf {vrf} l2vpn evpn rd {rd}',
+    ]
+    # Clean up RTs.
+    for rt_dir in ['import', 'export']:
+        for rt in getattr(vxlan_datum['vxlan'], f'{rt_dir}_targets'):
+            commands.append(
+                f'del bgp vrf {vrf} l2vpn evpn route-target {rt_dir} {rt}')
+    # Clean up VXLAN interface and dynamically bound VLAN.
+    commands += [
+        f'del vxlan {vxlan_if}',
+        f'del vlan {vxlan_datum["l3_vxlan_vlan"]}'
+    ]
+    return commands
+
+
+def generate_delete_vxlan_commands(vxlan_id: Union[str, int], vxlan_data: dict):
+    """
+    Return a list of commands required to tear down a VXLAN tunnel.
+
+    :param vxlan_id: The VNI of the target VXLAN tunnel.
+    :param vxlan_data: The output :py:func:`parse_vxlan_data`.
+    :return:
+    """
+    vxlan_datum = vxlan_data[int(vxlan_id)]
+    if vxlan_datum['layer'] == 2:
+        return generate_delete_l2_vxlan_commands(vxlan_datum)
+    if vxlan_datum['layer'] == 3:
+        return generate_delete_l3_vxlan_commands(vxlan_datum)

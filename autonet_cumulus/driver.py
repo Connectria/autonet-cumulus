@@ -374,3 +374,8 @@ class CumulusDriver(DeviceDriver):
             request_data, self.loopback_address, bgp_data, dynamic_vlan, ip_forward)
         self._exec_config_commands(commands)
         return self._tunnels_vxlan_read(str(request_data.id))
+
+    def _tunnels_vxlan_delete(self, request_data: str) -> None:
+        vxlan_data = self._get_vxlan_data()
+        commands = vxlan_task.generate_delete_vxlan_commands(request_data, vxlan_data)
+        self._exec_config_commands(commands)

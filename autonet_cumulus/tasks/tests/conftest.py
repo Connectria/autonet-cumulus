@@ -1045,7 +1045,8 @@ def test_ip_vrf_data():
 @pytest.fixture()
 def test_vxlan_data():
     return {
-        70000: {'layer': 3,
+        70000: {'l3_vxlan_vlan': 4086,
+                'layer': 3,
                 'vxlan': an_vxlan.VXLAN(
                     id=70000, source_address='192.168.0.106', layer=3,
                     import_targets=['65002:70000'],
@@ -1053,7 +1054,8 @@ def test_vxlan_data():
                     route_distinguisher='192.168.0.106:5',
                     bound_object_id='TestCust1-Prod'),
                 'vxlan_if': 'vxlan70000'},
-        70001: {'layer': 2,
+        70001: {'l3_vxlan_vlan': None,
+                'layer': 2,
                 'vxlan': an_vxlan.VXLAN(
                     id=70001, source_address='192.168.0.106', layer=2,
                     import_targets=['65002:70001'],
@@ -1061,7 +1063,8 @@ def test_vxlan_data():
                     route_distinguisher='192.168.0.106:4',
                     bound_object_id=71),
                 'vxlan_if': 'vxlan70001'},
-        70002: {'layer': 2,
+        70002: {'l3_vxlan_vlan': None,
+                'layer': 2,
                 'vxlan': an_vxlan.VXLAN(
                     id=70002, source_address='192.168.0.106', layer=2,
                     import_targets=['65002:70002'],
@@ -1069,7 +1072,8 @@ def test_vxlan_data():
                     route_distinguisher='192.168.0.106:2',
                     bound_object_id=72),
                 'vxlan_if': 'vxlan70002'},
-        111001: {'layer': 3,
+        111001: {'l3_vxlan_vlan': 4074,
+                 'layer': 3,
                  'vxlan': an_vxlan.VXLAN(
                      id=111001, source_address='192.168.0.106', layer=3,
                      import_targets=['65002:111001'],

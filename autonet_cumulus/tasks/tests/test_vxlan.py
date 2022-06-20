@@ -248,3 +248,107 @@ def test_generate_create_vxlan_commands(test_vxlan, test_bgp_data,
     commands = vxlan_task.generate_create_vxlan_commands(
         test_vxlan, test_bgp_data['rid'], test_bgp_data, test_dynamic_vlan)
     assert commands == expected
+
+
+@pytest.mark.parametrize('test_vxlan_datum, expected', [
+    ({'l3_vxlan_vlan': None,
+      'layer': 2,
+      'vxlan': an_vxlan.VXLAN(
+          id=70001, source_address='192.168.0.106', layer=2,
+          import_targets=['65002:70001'],
+          export_targets=['65002:70001'],
+          route_distinguisher='192.168.0.106:4',
+          bound_object_id=71),
+      'vxlan_if': 'vxlan70001'},
+     [
+         'del bgp l2vpn evpn vni 70001',
+         'del vxlan vxlan70001'
+     ]),
+    ({'l3_vxlan_vlan': None,
+      'layer': 2,
+      'vxlan': an_vxlan.VXLAN(
+          id=55155, source_address='198.18.0.1', layer=2,
+          import_targets=['65002:55155'],
+          export_targets=['65002:55155', '65000:1', '65000:22'],
+          route_distinguisher='198.18.0.1:55155',
+          bound_object_id=155),
+      'vxlan_if': 'vni55155'},
+     [
+         'del bgp l2vpn evpn vni 55155',
+         'del vxlan vni55155'
+     ])
+])
+def test_generate_delete_l2_vxlan_commands(test_vxlan_datum, expected):
+    commands = vxlan_task.generate_delete_l2_vxlan_commands(test_vxlan_datum)
+    assert commands == expected
+
+
+@pytest.mark.parametrize('test_vxlan_datum, expected', [
+    ({'l3_vxlan_vlan': 4074,
+      'layer': 3,
+      'vxlan': an_vxlan.VXLAN(
+          id=111001, source_address='192.168.0.106', layer=3,
+          import_targets=['65002:111001'],
+          export_targets=['65002:111001'],
+          route_distinguisher='192.168.0.106:6',
+          bound_object_id='green'),
+      'vxlan_if': 'vxlan111001'},
+     [
+         'del bgp vrf green l2vpn evpn vni 111001',
+         'del bgp vrf green l2vpn evpn advertise ipv4 unicast',
+         'del bgp vrf green l2vpn evpn advertise ipv6 unicast',
+         'del bgp vrf green l2vpn evpn rd 192.168.0.106:6',
+         'del bgp vrf green l2vpn evpn route-target import 65002:111001',
+         'del bgp vrf green l2vpn evpn route-target export 65002:111001',
+         'del vxlan vxlan111001',
+         'del vlan 4074'
+     ]),
+    ({'l3_vxlan_vlan': 3888,
+      'layer': 3,
+      'vxlan': an_vxlan.VXLAN(
+          id=111001, source_address='198.19.22.215', layer=3,
+          import_targets=['65002:55100', '65000:1', '65000:22'],
+          export_targets=['65002:55100', '65002:55155'],
+          route_distinguisher='198.19.22.215:1001',
+          bound_object_id='magenta'),
+      'vxlan_if': 'vxlan111001'},
+     [
+         'del bgp vrf magenta l2vpn evpn vni 111001',
+         'del bgp vrf magenta l2vpn evpn advertise ipv4 unicast',
+         'del bgp vrf magenta l2vpn evpn advertise ipv6 unicast',
+         'del bgp vrf magenta l2vpn evpn rd 198.19.22.215:1001',
+         'del bgp vrf magenta l2vpn evpn route-target import 65002:55100',
+         'del bgp vrf magenta l2vpn evpn route-target import 65000:1',
+         'del bgp vrf magenta l2vpn evpn route-target import 65000:22',
+         'del bgp vrf magenta l2vpn evpn route-target export 65002:55100',
+         'del bgp vrf magenta l2vpn evpn route-target export 65002:55155',
+         'del vxlan vxlan111001',
+         'del vlan 3888'
+     ])
+])
+def test_generate_delete_l3_vxlan_commands(test_vxlan_datum, expected):
+    commands = vxlan_task.generate_delete_l3_vxlan_commands(test_vxlan_datum)
+    assert commands == expected
+
+
+@pytest.mark.parametrize('test_vxlan_id, expected', [
+    ('111001', [
+        'del bgp vrf green l2vpn evpn vni 111001',
+        'del bgp vrf green l2vpn evpn advertise ipv4 unicast',
+        'del bgp vrf green l2vpn evpn advertise ipv6 unicast',
+        'del bgp vrf green l2vpn evpn rd 192.168.0.106:6',
+        'del bgp vrf green l2vpn evpn route-target import 65002:111001',
+        'del bgp vrf green l2vpn evpn route-target export 65002:111001',
+        'del vxlan vxlan111001',
+        'del vlan 4074'
+    ]),
+    (70001, [
+        'del bgp l2vpn evpn vni 70001',
+        'del vxlan vxlan70001'
+    ])
+])
+def test_generate_delete_vxlan_commands(test_vxlan_id, test_vxlan_data,
+                                        expected):
+    commands = vxlan_task.generate_delete_vxlan_commands(test_vxlan_id,
+                                                         test_vxlan_data)
+    assert commands == expected
