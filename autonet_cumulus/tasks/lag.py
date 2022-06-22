@@ -49,6 +49,22 @@ def get_lags(show_bonds_data: dict, show_evpn_es_data: dict = None,
     return bonds
 
 
+def generate_lag_esi_commands(lag: an_lag.LAG) -> [str]:
+    """
+    Generate the commands required to set a Type 3 ESI.
+
+    :param lag: A :py:class:`LAG` object.
+    :return:
+    """
+    parsed_esi = parse_esi(lag.evpn_esi)
+    if parsed_esi['type'] != 3:
+        raise Exception("Could not process ESI.")
+    es_id = parsed_esi['local_discriminator']
+    es_sys_mac = parsed_esi['system_mac']
+    return [f'add bond {lag.name} evpn mh es-id {es_id}',
+            f'add bond {lag.name} evpn mh es-sys-mac {es_sys_mac}']
+
+
 def generate_create_lag_commands(lag: an_lag.LAG) -> [str]:
     """
     Generate a list of commands needed to create a new
@@ -63,13 +79,55 @@ def generate_create_lag_commands(lag: an_lag.LAG) -> [str]:
     commands += [f'add bond {lag.name} bond slaves {member}'
                  for member in lag.members]
     if lag.evpn_esi:
-        parsed_esi = parse_esi(lag.evpn_esi)
-        if parsed_esi['type'] != 3:
-            raise Exception("Could not process ESI.")
-        es_id = parsed_esi['local_discriminator']
-        es_sys_mac = parsed_esi['system_mac']
-        commands.append(f'add bond {lag.name} evpn mh es-id {es_id}')
-        commands.append(f'add bond {lag.name} evpn mh es-sys-mac {es_sys_mac}')
+        commands += generate_lag_esi_commands(lag)
+
+    return commands
+
+
+def generate_update_lag_commands(lag: an_lag, original_lag: an_lag, update: bool) -> [str]:
+    """
+    Generate a list of commands to update or create a LAG, as
+    appropriate.
+
+    :param lag: A :py:class:`LAG` object representing the desired bond
+        configuration.
+    :param original_lag: A :py:class:`LAG` object representing the
+        current bond configuration.
+    :param update: When True no commands are generated for fields
+        that are set to None.
+    :return:
+    """
+    # If members is set, or we are doing a replacement operation.
+    commands = [f'add bond {lag.name} bond mode 802.3ad']
+    if lag.members or not update:
+        # keep_members are members that will remain in the bond.
+        keep_members = []
+        if original_lag:
+            keep_members = [member for member in lag.members
+                            if member in original_lag.members]
+        # If the member is new to the bond, we flush its configuration.
+        commands += [f'del interface {member}' for member in lag.members
+                     if member not in keep_members]
+        # We explicitly add all new members, even if they already exist
+        # because the operation is idempotent.
+        commands += [f'add interface {member}' for member in lag.members]
+        commands += [f'add bond {lag.name} bond slaves {member}'
+                     for member in lag.members]
+    # Find members to remove on a replace operation and there's an
+    # existing lag.
+    if lag.members and not update and original_lag:
+        remove_members = [member for member in original_lag.members
+                          if member not in lag.members]
+        commands += [f'del bond {lag.name} bond slaves {member}'
+                     for member in remove_members]
+        commands += [f'del interface {member}' for member in remove_members]
+
+    if lag.evpn_esi:
+        commands += generate_lag_esi_commands(lag)
+    # If it's a replace operation, we explicitly remove the configuration.
+    elif not update:
+        commands += [f'del bond {lag.name} evpn mh es-id',
+                     f'del bond {lag.name} evpn mh es-sys-mac']
 
     return commands
 

@@ -456,7 +456,11 @@ class CumulusDriver(DeviceDriver):
         return self._interface_lag_read(request_data.name, cache=False)
 
     def _interface_lag_update(self, request_data: an_lag.LAG, update: bool) -> an_lag.LAG:
-        pass
+        original_lag = self._interface_lag_read(request_data.name)
+        commands = lag_task.generate_update_lag_commands(
+            request_data, original_lag, update)
+        self._exec_config_commands(commands)
+        return self._interface_lag_read(request_data.name, cache=False)
 
     def _interface_lag_delete(self, request_data: str) -> None:
         commands = lag_task.generate_delete_lag_commands(request_data)
