@@ -12,6 +12,7 @@ from autonet.core.objects import vrf as an_vrf
 from autonet.core.objects import vxlan as an_vxlan
 from autonet.drivers.device.driver import DeviceDriver
 from autonet.util.config_string import glob_to_vlan_list
+from autonet.util.evpn import parse_esi
 from conf_engine.options import StringOption
 from json import loads as json_loads
 from json.decoder import JSONDecodeError
@@ -103,7 +104,7 @@ class CumulusDriver(DeviceDriver):
         :return:
         """
         version_command = 'show version'
-        version_result = self._exec_net_commands(version_command)
+        version_result = self._exec_net_commands([version_command])
         return version_result.get(version_command).json['os']
 
     @property
@@ -122,6 +123,26 @@ class CumulusDriver(DeviceDriver):
         """
 
         return int(self.version.split('.')[1])
+
+    @property
+    def evpn_mh_supported(self) -> bool:
+        """
+        Indicate that the device has support for EVPN MH.
+
+        :return:
+        """
+        supported_version = self.major_version >= 4 and self.minor_version >= 2
+        show_system_commands = 'show system'
+        show_system_result = self._exec_net_commands([show_system_commands])
+        system_data = show_system_result.get(show_system_commands).json
+        supported_platform = False
+        if 'info' in system_data['platform']:
+            soc_data = system_data['platform']['info']['soc']
+            supported_platform = soc_data['vendor'] == "Mellanox"
+        else:
+            supported_platform = system_data['platform']['model'] == 'VX'
+
+        return supported_platform and supported_version
 
     @staticmethod
     def _format_net_command(command: str, json: bool) -> str:
@@ -410,11 +431,11 @@ class CumulusDriver(DeviceDriver):
         commands = vxlan_task.generate_delete_vxlan_commands(request_data, vxlan_data)
         self._exec_config_commands(commands)
 
-    def _interface_lag_read(self, request_data: str) -> Union[List[an_lag.LAG], an_lag.LAG]:
+    def _interface_lag_read(self, request_data: str, cache=True) -> Union[List[an_lag.LAG], an_lag.LAG]:
         show_bonds_command = 'show interface bonds'
         show_evpn_es_command = 'show evpn es'
         command_results = self._exec_net_commands([show_bonds_command,
-                                                   show_evpn_es_command])
+                                                   show_evpn_es_command], cache=cache)
         show_bonds_data = command_results.get(show_bonds_command).json
         show_evpn_es_data = command_results.get(show_evpn_es_command).json
         bonds = lag_task.get_lags(show_bonds_data, show_evpn_es_data, request_data)
@@ -423,10 +444,20 @@ class CumulusDriver(DeviceDriver):
         return bonds
 
     def _interface_lag_create(self, request_data: an_lag.LAG) -> an_lag.LAG:
-        pass
+        if request_data.evpn_esi:
+            if not self.evpn_mh_supported:
+                raise exc.DeviceOperationUnsupported(self, 'evpn_esi',
+                                                     self.device.device_id)
+            if parse_esi(request_data.evpn_esi)['type'] != 3:
+                raise exc.DriverOperationUnsupported(
+                    self, 'EVPN ESI must be Type 3.')
+        commands = lag_task.generate_create_lag_commands(request_data)
+        self._exec_config_commands(commands)
+        return self._interface_lag_read(request_data.name, cache=False)
 
     def _interface_lag_update(self, request_data: an_lag.LAG, update: bool) -> an_lag.LAG:
         pass
 
     def _interface_lag_delete(self, request_data: str) -> None:
-        pass
+        commands = lag_task.generate_delete_lag_commands(request_data)
+        self._exec_config_commands(commands)
