@@ -21,6 +21,7 @@ from typing import List, Optional, Tuple, Union
 
 from autonet_cumulus.commands import CommandResult, CommandResultSet
 from autonet_cumulus.tasks import interface as if_task
+from autonet_cumulus.tasks import lag as lag_task
 from autonet_cumulus.tasks import vlan as vlan_task
 from autonet_cumulus.tasks import vrf as vrf_task
 from autonet_cumulus.tasks import vxlan as vxlan_task
@@ -41,6 +42,7 @@ class CumulusDriver(DeviceDriver):
         )
         self._result_cache = CommandResultSet()
         self._device = device
+        self._version_data = None
         super().__init__(device)
 
     @property
@@ -92,6 +94,34 @@ class CumulusDriver(DeviceDriver):
             if ip_int.version == 4 and not ip_int.is_loopback:
                 return str(ip_int.ip)
         raise Exception("Could not find loopback address.")
+
+    @property
+    def version(self) -> str:
+        """
+        The OS version string.
+
+        :return:
+        """
+        version_command = 'show version'
+        version_result = self._exec_net_commands(version_command)
+        return version_result.get(version_command).json['os']
+
+    @property
+    def major_version(self) -> int:
+        """
+        The OS major version number.
+        :return:
+        """
+        return int(self.version.split('.')[0])
+
+    @property
+    def minor_version(self) -> int:
+        """
+        The OS Minor version number.
+        :return:
+        """
+
+        return int(self.version.split('.')[1])
 
     @staticmethod
     def _format_net_command(command: str, json: bool) -> str:
@@ -379,3 +409,24 @@ class CumulusDriver(DeviceDriver):
         vxlan_data = self._get_vxlan_data()
         commands = vxlan_task.generate_delete_vxlan_commands(request_data, vxlan_data)
         self._exec_config_commands(commands)
+
+    def _interface_lag_read(self, request_data: str) -> Union[List[an_lag.LAG], an_lag.LAG]:
+        show_bonds_command = 'show interface bonds'
+        show_evpn_es_command = 'show evpn es'
+        command_results = self._exec_net_commands([show_bonds_command,
+                                                   show_evpn_es_command])
+        show_bonds_data = command_results.get(show_bonds_command).json
+        show_evpn_es_data = command_results.get(show_evpn_es_command).json
+        bonds = lag_task.get_lags(show_bonds_data, show_evpn_es_data, request_data)
+        if request_data and len(bonds) == 1:
+            return bonds[0]
+        return bonds
+
+    def _interface_lag_create(self, request_data: an_lag.LAG) -> an_lag.LAG:
+        pass
+
+    def _interface_lag_update(self, request_data: an_lag.LAG, update: bool) -> an_lag.LAG:
+        pass
+
+    def _interface_lag_delete(self, request_data: str) -> None:
+        pass

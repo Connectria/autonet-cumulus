@@ -1081,3 +1081,58 @@ def test_vxlan_data():
                      route_distinguisher='192.168.0.106:6',
                      bound_object_id='green'),
                  'vxlan_if': 'vxlan111001'}}
+
+
+@pytest.fixture
+def test_show_bonds_data():
+    return {
+        'bond10': {
+            'iface_obj': {
+                'members': {
+                    'swp10': 'swp10',
+                    'swp11': 'swp11'
+                }
+            }
+        },
+        'bond20': {
+            'iface_obj': {
+                'members': {
+                    'swp3': 'swp3'
+                }
+            }
+        }
+    }
+
+
+@pytest.fixture
+def test_show_evpn_es_data():
+    return [
+        {
+            'esi': '00:be:e9:af:00:3f:60:00:00:00',
+            'flags': ['remote'],
+            'vteps': [
+                {
+                    'nexthopId': 268435459,
+                    'vtep': '192.168.0.101'
+                }
+            ]
+        },
+        {
+            'accessPort': 'bond20',
+            'esi': '03:be:e9:af:17:3f:60:00:00:0a',
+            'flags': ['local', 'remote', 'nonDF'],
+            'vteps': [
+                {
+                    'dfAlgorithm': 'preference',
+                    'dfPreference': 32767,
+                    'nexthopId': 268435460,
+                    'vtep': '192.168.0.105'
+                }
+            ]
+        },
+        {
+            'accessPort': 'bond10',
+            'esi': '03:be:e9:af:17:3f:60:00:00:14',
+            'flags': ['local', 'nonDF']
+        }
+    ]
