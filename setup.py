@@ -11,7 +11,7 @@ with open(here + '/autonet_cumulus/__version__.py', 'r') as f:
 
 install_requires = [
     'autonet-api',
-    'fabric'
+    'parallel-ssh'
 ]
 
 test_requires = install_requires + [
