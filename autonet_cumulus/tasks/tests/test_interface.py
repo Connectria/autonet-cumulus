@@ -64,6 +64,14 @@ def test_get_interface_type(test_int_data, expected):
     assert int_type == expected
 
 
+@pytest.mark.parametrize('test_summary, expected', [
+    ('Master: bond20(UP)', 'bond20'),
+    ('Master: appsrv_09(DN)', 'appsrv_09'),
+    ('', None)
+])
+def test_get_interface_master(test_summary, expected):
+    assert if_task.get_interface_master(test_summary) == expected
+
 @pytest.mark.parametrize(
     'test_int_name, test_int_type, test_action, expected',
     [
@@ -263,10 +271,10 @@ def test_get_interface(test_int_data, test_vrf_list, expected):
             admin_enabled=True, physical_address='0C-33-0E-25-52-02',
             child=False, parent=None, speed=1000, duplex='full', mtu=1500),
         an_if.Interface(
-            name='swp3', mode='routed', description='', virtual=False,
-            attributes=an_if.InterfaceRouteAttributes(addresses=[], vrf=None),
+            name='swp3', mode='aggregated', description='', virtual=False,
+            attributes=None,
             admin_enabled=True, physical_address='0C-33-0E-25-52-03',
-            child=False, parent=None, speed=1000, duplex='full', mtu=9216),
+            child=False, parent='bond20', speed=1000, duplex='full', mtu=9216),
         an_if.Interface(
             name='swp5', mode='bridged', description='[an]', virtual=False,
             attributes=an_if.InterfaceBridgeAttributes(

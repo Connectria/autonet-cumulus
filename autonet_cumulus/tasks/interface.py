@@ -86,6 +86,22 @@ def get_interface_type(int_name, int_data):
     return 'vxlan'
 
 
+def get_interface_master(summary: str) -> Optional[str]:
+    """
+    Parses the summary string from the interface to determine master
+    device name.  If the string is parsed successfully the master
+    device name is returned, otherwise None is returned.
+
+    :param summary: Interface summary string.
+    :return:
+    """
+    regex = r'^Master: (?P<master>[\w]*)\(.*\)$'
+    if match := re.search(regex, summary):
+        return match.group('master')
+    else:
+        return None
+
+
 def get_base_command(int_name: str, int_type: str, action: str = 'add') -> str:
     """
     Generates the base command for interface configuration.
@@ -194,9 +210,14 @@ def get_interface(int_name: str, int_data: dict, subint_data: dict = None,
     :return:
     """
     # Determine mode and generate appropriate attributes.
+    parent = None
     if int_data['iface_obj']['vlan_list']:
         mode = 'bridged'
         attributes = get_bridge_attributes(int_data)
+    elif int_data['mode'] == 'BondMember':
+        mode = 'aggregated'
+        attributes = None
+        parent = get_interface_master(int_data['summary'])
     else:
         mode = 'routed'
         attributes = get_route_attributes(int_data, vrf_list, subint_data)
@@ -214,7 +235,7 @@ def get_interface(int_name: str, int_data: dict, subint_data: dict = None,
         physical_address=int_data['iface_obj']['mac'],
         duplex=duplex,
         speed=speed,
-        parent=None,
+        parent=parent,
         child=False,
         mtu=int_data['iface_obj']['mtu']
     )
