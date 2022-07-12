@@ -523,7 +523,6 @@ def test_generate_create_interface_commands(
             admin_enabled=True, speed=1000, duplex='full', mtu=9000),
          'bond', False,
          [
-             'del bond bond20',
              'add bond bond20',
              'del bond bond20 link down',
              'add bond bond20 mtu 9000',
@@ -650,7 +649,6 @@ def test_generate_create_commands(test_interface, test_int_type, expected):
             admin_enabled=False, speed=10000, duplex='full', mtu=1500),
          'bond', False,
          [
-             'del bond bond20',
              'add bond bond20',
              'add bond bond20 link down',
              'add bond bond20 mtu 1500',

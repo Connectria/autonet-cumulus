@@ -406,7 +406,8 @@ def generate_update_interface_commands(interface: an_if.Interface,
     del_base = get_base_command(interface.name, int_type, 'del')
     add_base = get_base_command(interface.name, int_type, 'add')
     if not update:
-        del_commands = [del_base]
+        # We made sure to omit default delete for bonds.
+        del_commands = [del_base] if not int_type == 'bond' else []
         create_commands = generate_create_interface_commands(interface,
                                                              int_type)
         return del_commands + create_commands
