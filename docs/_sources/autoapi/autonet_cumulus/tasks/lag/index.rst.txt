@@ -1,0 +1,87 @@
+:py:mod:`autonet_cumulus.tasks.lag`
+===================================
+
+.. py:module:: autonet_cumulus.tasks.lag
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   autonet_cumulus.tasks.lag.get_evpn_es_map
+   autonet_cumulus.tasks.lag.get_lags
+   autonet_cumulus.tasks.lag.generate_lag_esi_commands
+   autonet_cumulus.tasks.lag.generate_create_lag_commands
+   autonet_cumulus.tasks.lag.generate_update_lag_commands
+   autonet_cumulus.tasks.lag.generate_delete_lag_commands
+
+
+
+.. py:function:: get_evpn_es_map(show_evpn_es_data: dict) -> dict
+
+   Parses the output of the :code:`show evpn es` command into a
+   mapping of interface to ES value so that it can be easily
+   referenced.
+
+   :param show_evpn_es_data: Output from the :code:`show evpn es`
+       command.
+   :return:
+
+
+.. py:function:: get_lags(show_bonds_data: dict, show_evpn_es_data: dict = None, bond_name: str = None) -> [autonet.core.objects.lag.LAG]
+
+   Returns a list of LAGs configured on the device.
+
+   :param show_bonds_data: Output from the
+       :code:`show interface bonds` command.
+   :param show_evpn_es_data: Output from the :code:`show evpn es`
+       command.
+   :param bond_name: Filter results for the specified bond name.
+   :return:
+
+
+.. py:function:: generate_lag_esi_commands(lag: autonet.core.objects.lag.LAG) -> [str]
+
+   Generate the commands required to set a Type 3 ESI.
+
+   :param lag: A :py:class:`LAG` object.
+   :return:
+
+
+.. py:function:: generate_create_lag_commands(lag: autonet.core.objects.lag.LAG) -> [str]
+
+   Generate a list of commands needed to create a new
+   LAG interface.
+
+   :param lag: A :py:class:`LAG` object.
+   :return:
+
+
+.. py:function:: generate_update_lag_commands(lag: autonet.core.objects.lag, original_lag: autonet.core.objects.lag, update: bool) -> [str]
+
+   Generate a list of commands to update or create a LAG, as
+   appropriate.
+
+   :param lag: A :py:class:`LAG` object representing the desired bond
+       configuration.
+   :param original_lag: A :py:class:`LAG` object representing the
+       current bond configuration.
+   :param update: When True no commands are generated for fields
+       that are set to None.
+   :return:
+
+
+.. py:function:: generate_delete_lag_commands(lag_name: str) -> [str]
+
+   Generate a list of commands needed to delete a bond
+   interface.
+
+   :param lag_name: The name of the bond interface.
+   :return:
+
+

@@ -1,0 +1,17 @@
+API Reference
+=============
+
+This page contains auto-generated API reference documentation [#f1]_.
+
+.. toctree::
+   :titlesonly:
+
+   /autoapi/autonet_cumulus/index
+   /autoapi/test_lag/index
+   /autoapi/test_vlan/index
+   /autoapi/test_interface/index
+   /autoapi/test_vrf/index
+   /autoapi/conftest/index
+   /autoapi/test_vxlan/index
+
+.. [#f1] Created with `sphinx-autoapi <https://github.com/readthedocs/sphinx-autoapi>`_

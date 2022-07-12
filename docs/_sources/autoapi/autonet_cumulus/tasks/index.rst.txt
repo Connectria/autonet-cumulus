@@ -1,0 +1,19 @@
+:py:mod:`autonet_cumulus.tasks`
+===============================
+
+.. py:module:: autonet_cumulus.tasks
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   interface/index.rst
+   lag/index.rst
+   vlan/index.rst
+   vrf/index.rst
+   vxlan/index.rst
+
+

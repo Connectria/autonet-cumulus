@@ -1,0 +1,57 @@
+:py:mod:`autonet_cumulus.tasks.vlan`
+====================================
+
+.. py:module:: autonet_cumulus.tasks.vlan
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   autonet_cumulus.tasks.vlan.get_vlans
+   autonet_cumulus.tasks.vlan.generate_create_vlan_commands
+   autonet_cumulus.tasks.vlan.generate_delete_vlan_commands
+
+
+
+.. py:function:: get_vlans(vlan_data: dict, bridge: str, dynamic_vlans: [int], vlan_id: Union[str, int] = None, show_dynamic: bool = False) -> [autonet.core.objects.vlan.VLAN]
+
+   Returns a list of :py:class:`VLAN` objects.  VLAN IDs
+   that fall in the range of reserved VLANs will be omitted by
+   default.
+
+   :param vlan_data: Output from the :code:`show bridge vlan` command.
+   :param bridge: The primary bridge name.
+   :param dynamic_vlans: A list of VLAN IDs reserved for dynamic
+       allocation.
+   :param vlan_id: Filter results for the given VLAN ID.
+   :param show_dynamic: Include dynamic VLANs in the response.
+   :return:
+
+
+.. py:function:: generate_create_vlan_commands(vlan: autonet.core.objects.vlan.VLAN, bridge: str) -> [str]
+
+   Generate a list of commands to create a vlan on the bridge.  If the
+   VLAN exists in the defined dynamic range, nothing will be returned.
+
+   :param vlan: A :py:class:`VLAN` object.
+   :param bridge: The primary bridge name.
+   :return:
+
+
+.. py:function:: generate_delete_vlan_commands(vlan_id: Union[str, int], bridge: str) -> [str]
+
+   Generate a list of commands to delete a vlan from the bridge.  If
+   the VLAN exists in the defined dynamic range, nothing will be
+   returned.
+
+   :param vlan_id: The VLAN ID to delete.
+   :param bridge: The primary bridge name.
+   :return:
+
+

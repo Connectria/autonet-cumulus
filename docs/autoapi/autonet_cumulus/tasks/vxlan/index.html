@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>autonet_cumulus.tasks.vxlan &#8212; autonet-cumulus 0.2.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css" />
+    
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="autonet_cumulus.__version__" href="../../__version__/index.html" />
+    <link rel="prev" title="autonet_cumulus.tasks.vrf" href="../vrf/index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../__version__/index.html" title="autonet_cumulus.__version__"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../vrf/index.html" title="autonet_cumulus.tasks.vrf"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">autonet-cumulus 0.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../index.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus</span></code></a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../index.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks</span></code></a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks.vxlan</span></code></a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-autonet_cumulus.tasks.vxlan">
+<span id="autonet-cumulus-tasks-vxlan"></span><h1><a class="reference internal" href="#module-autonet_cumulus.tasks.vxlan" title="autonet_cumulus.tasks.vxlan"><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks.vxlan</span></code></a><a class="headerlink" href="#module-autonet_cumulus.tasks.vxlan" title="Permalink to this heading">¶</a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">¶</a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.parse_vxlan_data" title="autonet_cumulus.tasks.vxlan.parse_vxlan_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_vxlan_data</span></code></a>(evpn_vni_data: dict, bgp_vni_data: dict, vlan_data: dict) → dict</p></td>
+<td><p>Cumulus does not have a single source of information for vxlan</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.get_vxlans" title="autonet_cumulus.tasks.vxlan.get_vxlans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vxlans</span></code></a>(vxlan_data: dict, vnid: Optional[Union[str, int]]) → [autonet.core.objects.vxlan.VXLAN]</p></td>
+<td><p>Returns a list of configured VXLAN tunnels on the device.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_vxlan_rt_commands" title="autonet_cumulus.tasks.vxlan.generate_vxlan_rt_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_vxlan_rt_commands</span></code></a>(vxlan: autonet.core.objects.vxlan.VXLAN, bgp_asn: Union[str, int]) → [str]</p></td>
+<td><p>Generate a list of RT configuration commands for EVPN import and</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_create_l2_vxlan_commands" title="autonet_cumulus.tasks.vxlan.generate_create_l2_vxlan_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_create_l2_vxlan_commands</span></code></a>(vxlan: autonet.core.objects.vxlan.VXLAN, bgp_data: dict, ip_forward: bool = False) → [str]</p></td>
+<td><p>Generate the commands required to set up an L2 VXLAN binding.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_create_l3_vxlan_commands" title="autonet_cumulus.tasks.vxlan.generate_create_l3_vxlan_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_create_l3_vxlan_commands</span></code></a>(vxlan: autonet.core.objects.vxlan.VXLAN, bgp_data: dict, dynamic_vlan: Optional[int] = None) → [str]</p></td>
+<td><p>Generate the commands required to set up an L3 VXLAN binding.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_create_vxlan_commands" title="autonet_cumulus.tasks.vxlan.generate_create_vxlan_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_create_vxlan_commands</span></code></a>(vxlan: autonet.core.objects.vxlan.VXLAN, auto_source: str, bgp_data: dict, dynamic_vlan: Optional[int] = None, ip_forward: bool = False) → [str]</p></td>
+<td><p>Generate a list of commands required to create a VXLAN.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_delete_l2_vxlan_commands" title="autonet_cumulus.tasks.vxlan.generate_delete_l2_vxlan_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_delete_l2_vxlan_commands</span></code></a>(vxlan_datum: dict) → [str]</p></td>
+<td><p>Generate a list of commands required to tear down an L2 VXLAN</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_delete_l3_vxlan_commands" title="autonet_cumulus.tasks.vxlan.generate_delete_l3_vxlan_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_delete_l3_vxlan_commands</span></code></a>(vxlan_datum: dict) → [str]</p></td>
+<td><p>Generate a list of commands required to tear down an L3 VXLAN</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_delete_vxlan_commands" title="autonet_cumulus.tasks.vxlan.generate_delete_vxlan_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_delete_vxlan_commands</span></code></a>(vxlan_id: Union[str, int], vxlan_data: dict)</p></td>
+<td><p>Return a list of commands required to tear down a VXLAN tunnel.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.vxlan.parse_vxlan_data">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.vxlan.</span></span><span class="sig-name descname"><span class="pre">parse_vxlan_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evpn_vni_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bgp_vni_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vlan_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.vxlan.parse_vxlan_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cumulus does not have a single source of information for vxlan
+configuration as modeled by Autonet.  Instead, the information
+must be parsed from several command outputs.  This function
+performs that parsing and emits a dictionary of objects indexed
+by VNI that contains a <code class="xref py py-class docutils literal notranslate"><span class="pre">VXLAN</span></code> dataclass as well as
+additional metadata that can be used for driver operations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>evpn_vni_data</strong> – Output from the <code class="code docutils literal notranslate"><span class="pre">show</span> <span class="pre">evpn</span> <span class="pre">vni</span></code>
+command.</p></li>
+<li><p><strong>bgp_vni_data</strong> – Output from the <code class="code docutils literal notranslate"><span class="pre">show</span> <span class="pre">bgp</span> <span class="pre">evpn</span> <span class="pre">vni</span></code>
+command.</p></li>
+<li><p><strong>vlan_data</strong> – Output from the <code class="code docutils literal notranslate"><span class="pre">show</span> <span class="pre">bridge</span> <span class="pre">vlan</span></code>
+command.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.vxlan.get_vxlans">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.vxlan.</span></span><span class="sig-name descname"><span class="pre">get_vxlans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vxlan_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vnid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">autonet.core.objects.vxlan.VXLAN</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.vxlan.get_vxlans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of configured VXLAN tunnels on the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vxlan_data</strong> – Dictionary returned by
+<a class="reference internal" href="#autonet_cumulus.tasks.vxlan.parse_vxlan_data" title="autonet_cumulus.tasks.vxlan.parse_vxlan_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">parse_vxlan_data()</span></code></a>.</p></li>
+<li><p><strong>vnid</strong> – Filter for the given VNID.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.vxlan.generate_vxlan_rt_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.vxlan.</span></span><span class="sig-name descname"><span class="pre">generate_vxlan_rt_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vxlan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autonet.core.objects.vxlan.VXLAN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bgp_asn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.vxlan.generate_vxlan_rt_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of RT configuration commands for EVPN import and
+export.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vxlan</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">VXLAN</span></code> object.</p></li>
+<li><p><strong>bgp_asn</strong> – The BGP ASN to use when generating auto targets.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.vxlan.generate_create_l2_vxlan_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.vxlan.</span></span><span class="sig-name descname"><span class="pre">generate_create_l2_vxlan_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vxlan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autonet.core.objects.vxlan.VXLAN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bgp_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ip_forward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.vxlan.generate_create_l2_vxlan_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the commands required to set up an L2 VXLAN binding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vxlan</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">VXLAN</span></code> object.</p></li>
+<li><p><strong>bgp_data</strong> – BGP data dictionary containing ASN and router ID.</p></li>
+<li><p><strong>ip_forward</strong> – If False then disable ip_forwarding on an SVI
+for a bound vlan.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.vxlan.generate_create_l3_vxlan_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.vxlan.</span></span><span class="sig-name descname"><span class="pre">generate_create_l3_vxlan_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vxlan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autonet.core.objects.vxlan.VXLAN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bgp_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_vlan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.vxlan.generate_create_l3_vxlan_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the commands required to set up an L3 VXLAN binding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vxlan</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">VXLAN</span></code> object.</p></li>
+<li><p><strong>bgp_data</strong> – BGP data dictionary containing ASN and router ID.</p></li>
+<li><p><strong>dynamic_vlan</strong> – A dynamically assigned VLAN to be used when
+binding an L3 VNI.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.vxlan.generate_create_vxlan_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.vxlan.</span></span><span class="sig-name descname"><span class="pre">generate_create_vxlan_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vxlan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autonet.core.objects.vxlan.VXLAN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bgp_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_vlan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ip_forward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.vxlan.generate_create_vxlan_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of commands required to create a VXLAN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vxlan</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">VXLAN</span></code> object.</p></li>
+<li><p><strong>auto_source</strong> – The IP address to use when source is set to
+“auto”.</p></li>
+<li><p><strong>bgp_data</strong> – BGP data dictionary containing ASN and router ID.</p></li>
+<li><p><strong>dynamic_vlan</strong> – A dynamically assigned VLAN to be used when
+binding an L3 VNI.</p></li>
+<li><p><strong>ip_forward</strong> – If False then disable ip_forwarding on an SVI
+for a bound vlan.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.vxlan.generate_delete_l2_vxlan_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.vxlan.</span></span><span class="sig-name descname"><span class="pre">generate_delete_l2_vxlan_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vxlan_datum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.vxlan.generate_delete_l2_vxlan_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of commands required to tear down an L2 VXLAN
+tunnel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vxlan_datum</strong> – The individual vxlan_data object from
+<a class="reference internal" href="#autonet_cumulus.tasks.vxlan.parse_vxlan_data" title="autonet_cumulus.tasks.vxlan.parse_vxlan_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_vxlan_data()</span></code></a> that represents the VXLAN tunnel.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.vxlan.generate_delete_l3_vxlan_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.vxlan.</span></span><span class="sig-name descname"><span class="pre">generate_delete_l3_vxlan_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vxlan_datum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.vxlan.generate_delete_l3_vxlan_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of commands required to tear down an L3 VXLAN
+tunnel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vxlan_datum</strong> – The individual vxlan_data object from
+<a class="reference internal" href="#autonet_cumulus.tasks.vxlan.parse_vxlan_data" title="autonet_cumulus.tasks.vxlan.parse_vxlan_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_vxlan_data()</span></code></a> that represents the VXLAN tunnel.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.vxlan.generate_delete_vxlan_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.vxlan.</span></span><span class="sig-name descname"><span class="pre">generate_delete_vxlan_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vxlan_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vxlan_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autonet_cumulus.tasks.vxlan.generate_delete_vxlan_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of commands required to tear down a VXLAN tunnel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vxlan_id</strong> – The VNI of the target VXLAN tunnel.</p></li>
+<li><p><strong>vxlan_data</strong> – The output <a class="reference internal" href="#autonet_cumulus.tasks.vxlan.parse_vxlan_data" title="autonet_cumulus.tasks.vxlan.parse_vxlan_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_vxlan_data()</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks.vxlan</span></code></a><ul>
+<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#functions">Functions</a><ul>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.parse_vxlan_data">parse_vxlan_data</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.get_vxlans">get_vxlans</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_vxlan_rt_commands">generate_vxlan_rt_commands</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_create_l2_vxlan_commands">generate_create_l2_vxlan_commands</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_create_l3_vxlan_commands">generate_create_l3_vxlan_commands</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_create_vxlan_commands">generate_create_vxlan_commands</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_delete_l2_vxlan_commands">generate_delete_l2_vxlan_commands</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_delete_l3_vxlan_commands">generate_delete_l3_vxlan_commands</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.vxlan.generate_delete_vxlan_commands">generate_delete_vxlan_commands</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../vrf/index.html"
+                          title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks.vrf</span></code></a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="../../__version__/index.html"
+                          title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.__version__</span></code></a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../../_sources/autoapi/autonet_cumulus/tasks/vxlan/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../__version__/index.html" title="autonet_cumulus.__version__"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../vrf/index.html" title="autonet_cumulus.tasks.vrf"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">autonet-cumulus 0.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../index.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus</span></code></a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../index.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks</span></code></a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks.vxlan</span></code></a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Connectria, LLC.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    </div>
+  </body>
+</html>

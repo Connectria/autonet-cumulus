@@ -1,0 +1,233 @@
+:py:mod:`autonet_cumulus.driver`
+================================
+
+.. py:module:: autonet_cumulus.driver
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   autonet_cumulus.driver.CumulusDriver
+
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   autonet_cumulus.driver.cl_opts
+
+
+.. py:data:: cl_opts
+   
+
+   
+
+.. py:class:: CumulusDriver(device: autonet.core.device.AutonetDevice)
+
+   Bases: :py:obj:`autonet.drivers.device.driver.DeviceDriver`
+
+   .. py:method:: dynamic_vlans(self) -> [int]
+      :property:
+
+      A list of integers that represent VLAN IDs that have been
+      reserved for dynamic allocation.
+
+      :return:
+
+
+   .. py:method:: bridge(self) -> str
+      :property:
+
+      Return the name of the bridge device.  If the bridge name is
+      explicitly configured, that will be used.  Otherwise, the
+      bridge name will be inferred from the first bridge defined.
+
+      :return:
+
+
+   .. py:method:: loopback_address(self)
+      :property:
+
+      Returns the first IPv4 /32 address attached to the loopback
+      interface. An exception is raised if the loopback cannot
+      be found.
+
+      :return:
+
+
+   .. py:method:: version(self) -> str
+      :property:
+
+      The OS version string.
+
+      :return:
+
+
+   .. py:method:: major_version(self) -> int
+      :property:
+
+      The OS major version number.
+      :return:
+
+
+   .. py:method:: minor_version(self) -> int
+      :property:
+
+      The OS Minor version number.
+      :return:
+
+
+   .. py:method:: evpn_mh_supported(self) -> bool
+      :property:
+
+      Indicate that the device has support for EVPN MH.
+
+      :return:
+
+
+   .. py:method:: _format_net_command(command: str, json: bool) -> str
+      :staticmethod:
+
+      Properly formats a NETd command.
+
+      :param command: The command to set to NETd.
+      :param json: Indicate if JSON output is desired.
+      :return:
+
+
+   .. py:method:: _exec_raw_command(self, command: str) -> Tuple[str, str]
+
+      Execute a raw command on the device and returns the raw output.
+      Returns a tuple of stdout, and stderr strings.
+
+      :param command: The command to execute.
+      :return:
+
+
+   .. py:method:: _exec_net_commands(self, commands: [str], json: bool = True, cache: bool = True) -> autonet_cumulus.commands.CommandResultSet
+
+      Executes a list of NETd commands on the device and returns a
+      list of results.  Attempt will be made to send the command
+      requesting output formatted as  JSON unless :py:attr:`json` is
+      set to False.  JSON results will be returned already parsed by
+      :py:meth:`json.loads()`.
+
+      :param commands: A list of commands to be executed.
+      :param json: Attempt to get the command's JSON output and parse
+          it accordingly.
+      :param cache: Search the command result cache for previously
+          cached results for the same command.
+      :return:
+
+
+   .. py:method:: _exec_config_abort(self) -> autonet_cumulus.commands.CommandResultSet
+
+      Executes the `net abort` command and returns the
+      result set.
+
+      :return:
+
+
+   .. py:method:: _exec_config_commands(self, commands: [str]) -> autonet_cumulus.commands.CommandResultSet
+
+      Executes a list of configuration commands.  Once the commands
+      are applied an attempt to execute a commit will be performed.
+      If the commit fails an attempt to execute a config abort will
+      be made and an exception will be raised.
+
+      :param commands:
+      :return:
+
+
+   .. py:method:: _get_interface_type(self, int_name) -> str
+
+      Gets the type of interface, vlan, bond, vrf, etc.
+
+      :param int_name: The name of the interface
+      :return:
+
+
+   .. py:method:: _get_vxlan_data(self) -> dict
+
+      Collect data about VXLAN configuration from several commands
+      and return a parsed object containing information that can be
+      used by various other methods.
+
+      :return:
+
+
+   .. py:method:: _get_dynamic_vlan(self) -> int
+
+      Get a vlan from the configured dynamic vlan pool.
+
+      :return:
+
+
+   .. py:method:: _get_bgp_evpn_data(self) -> dict
+
+      Collects the BGP ASN and router ID for the EVPN address family
+      and returns them in a dictionary.
+
+      :return:
+
+
+   .. py:method:: _interface_read(self, request_data: str = None, cache=True) -> [autonet.core.objects.interfaces.Interface]
+
+
+   .. py:method:: _interface_create(self, request_data: autonet.core.objects.interfaces.Interface) -> autonet.core.objects.interfaces.Interface
+
+
+   .. py:method:: _interface_update(self, request_data: autonet.core.objects.interfaces.Interface, update) -> autonet.core.objects.interfaces.Interface
+
+
+   .. py:method:: _interface_delete(self, request_data: str)
+
+
+   .. py:method:: _bridge_vlan_read(self, request_data: Optional[Union[str, int]] = None, show_dynamic: bool = False) -> Union[List[autonet.core.objects.vlan.VLAN], autonet.core.objects.vlan.VLAN]
+
+
+   .. py:method:: _bridge_vlan_create(self, request_data: autonet.core.objects.vlan.VLAN) -> autonet.core.objects.vlan.VLAN
+
+
+   .. py:method:: _bridge_vlan_delete(self, request_data: str) -> None
+
+
+   .. py:method:: _vrf_read(self, request_data: str = None) -> Union[List[autonet.core.objects.vrf.VRF], autonet.core.objects.vrf.VRF]
+
+
+   .. py:method:: _vrf_create(self, request_data: autonet.core.objects.vrf.VRF) -> autonet.core.objects.vrf.VRF
+
+
+   .. py:method:: _vrf_delete(self, request_data: str) -> None
+
+
+   .. py:method:: _tunnels_vxlan_read(self, request_data: str = None) -> Union[List[autonet.core.objects.vxlan.VXLAN], autonet.core.objects.vxlan.VXLAN]
+
+
+   .. py:method:: _tunnels_vxlan_create(self, request_data: autonet.core.objects.vxlan.VXLAN) -> autonet.core.objects.vxlan.VXLAN
+
+
+   .. py:method:: _tunnels_vxlan_delete(self, request_data: str) -> None
+
+
+   .. py:method:: _interface_lag_read(self, request_data: str, cache=True) -> Union[List[autonet.core.objects.lag.LAG], autonet.core.objects.lag.LAG]
+
+
+   .. py:method:: _interface_lag_create(self, request_data: autonet.core.objects.lag.LAG) -> autonet.core.objects.lag.LAG
+
+
+   .. py:method:: _interface_lag_update(self, request_data: autonet.core.objects.lag.LAG, update: bool) -> autonet.core.objects.lag.LAG
+
+
+   .. py:method:: _interface_lag_delete(self, request_data: str) -> None
+
+
+

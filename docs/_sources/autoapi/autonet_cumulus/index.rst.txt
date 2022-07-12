@@ -1,0 +1,26 @@
+:py:mod:`autonet_cumulus`
+=========================
+
+.. py:module:: autonet_cumulus
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   tasks/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   __version__/index.rst
+   commands/index.rst
+   driver/index.rst
+
+

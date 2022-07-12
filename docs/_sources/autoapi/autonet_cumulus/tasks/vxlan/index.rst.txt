@@ -1,0 +1,131 @@
+:py:mod:`autonet_cumulus.tasks.vxlan`
+=====================================
+
+.. py:module:: autonet_cumulus.tasks.vxlan
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   autonet_cumulus.tasks.vxlan.parse_vxlan_data
+   autonet_cumulus.tasks.vxlan.get_vxlans
+   autonet_cumulus.tasks.vxlan.generate_vxlan_rt_commands
+   autonet_cumulus.tasks.vxlan.generate_create_l2_vxlan_commands
+   autonet_cumulus.tasks.vxlan.generate_create_l3_vxlan_commands
+   autonet_cumulus.tasks.vxlan.generate_create_vxlan_commands
+   autonet_cumulus.tasks.vxlan.generate_delete_l2_vxlan_commands
+   autonet_cumulus.tasks.vxlan.generate_delete_l3_vxlan_commands
+   autonet_cumulus.tasks.vxlan.generate_delete_vxlan_commands
+
+
+
+.. py:function:: parse_vxlan_data(evpn_vni_data: dict, bgp_vni_data: dict, vlan_data: dict) -> dict
+
+   Cumulus does not have a single source of information for vxlan
+   configuration as modeled by Autonet.  Instead, the information
+   must be parsed from several command outputs.  This function
+   performs that parsing and emits a dictionary of objects indexed
+   by VNI that contains a :py:class:`VXLAN` dataclass as well as
+   additional metadata that can be used for driver operations.
+
+   :param evpn_vni_data: Output from the :code:`show evpn vni`
+       command.
+   :param bgp_vni_data: Output from the :code:`show bgp evpn vni`
+       command.
+   :param vlan_data: Output from the :code:`show bridge vlan`
+       command.
+   :return:
+
+
+.. py:function:: get_vxlans(vxlan_data: dict, vnid: Optional[Union[str, int]]) -> [autonet.core.objects.vxlan.VXLAN]
+
+   Returns a list of configured VXLAN tunnels on the device.
+
+   :param vxlan_data: Dictionary returned by
+       :py:meth:`parse_vxlan_data`.
+   :param vnid: Filter for the given VNID.
+   :return:
+
+
+.. py:function:: generate_vxlan_rt_commands(vxlan: autonet.core.objects.vxlan.VXLAN, bgp_asn: Union[str, int]) -> [str]
+
+   Generate a list of RT configuration commands for EVPN import and
+   export.
+
+   :param vxlan: A :py:class:`VXLAN` object.
+   :param bgp_asn: The BGP ASN to use when generating auto targets.
+   :return:
+
+
+.. py:function:: generate_create_l2_vxlan_commands(vxlan: autonet.core.objects.vxlan.VXLAN, bgp_data: dict, ip_forward: bool = False) -> [str]
+
+   Generate the commands required to set up an L2 VXLAN binding.
+
+   :param vxlan: A :py:class:`VXLAN` object.
+   :param bgp_data: BGP data dictionary containing ASN and router ID.
+   :param ip_forward: If False then disable ip_forwarding on an SVI
+       for a bound vlan.
+   :return:
+
+
+.. py:function:: generate_create_l3_vxlan_commands(vxlan: autonet.core.objects.vxlan.VXLAN, bgp_data: dict, dynamic_vlan: Optional[int] = None) -> [str]
+
+   Generate the commands required to set up an L3 VXLAN binding.
+
+   :param vxlan: A :py:class:`VXLAN` object.
+   :param bgp_data: BGP data dictionary containing ASN and router ID.
+   :param dynamic_vlan: A dynamically assigned VLAN to be used when
+       binding an L3 VNI.
+   :return:
+
+
+.. py:function:: generate_create_vxlan_commands(vxlan: autonet.core.objects.vxlan.VXLAN, auto_source: str, bgp_data: dict, dynamic_vlan: Optional[int] = None, ip_forward: bool = False) -> [str]
+
+   Generate a list of commands required to create a VXLAN.
+
+   :param vxlan: A :py:class:`VXLAN` object.
+   :param auto_source: The IP address to use when source is set to
+       "auto".
+   :param bgp_data: BGP data dictionary containing ASN and router ID.
+   :param dynamic_vlan: A dynamically assigned VLAN to be used when
+       binding an L3 VNI.
+   :param ip_forward: If False then disable ip_forwarding on an SVI
+       for a bound vlan.
+   :return:
+
+
+.. py:function:: generate_delete_l2_vxlan_commands(vxlan_datum: dict) -> [str]
+
+   Generate a list of commands required to tear down an L2 VXLAN
+   tunnel.
+
+   :param vxlan_datum: The individual vxlan_data object from
+       :py:func:`parse_vxlan_data` that represents the VXLAN tunnel.
+   :return:
+
+
+.. py:function:: generate_delete_l3_vxlan_commands(vxlan_datum: dict) -> [str]
+
+   Generate a list of commands required to tear down an L3 VXLAN
+   tunnel.
+
+   :param vxlan_datum: The individual vxlan_data object from
+       :py:func:`parse_vxlan_data` that represents the VXLAN tunnel.
+   :return:
+
+
+.. py:function:: generate_delete_vxlan_commands(vxlan_id: Union[str, int], vxlan_data: dict)
+
+   Return a list of commands required to tear down a VXLAN tunnel.
+
+   :param vxlan_id: The VNI of the target VXLAN tunnel.
+   :param vxlan_data: The output :py:func:`parse_vxlan_data`.
+   :return:
+
+

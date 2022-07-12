@@ -1,0 +1,30 @@
+:py:mod:`test_vlan`
+===================
+
+.. py:module:: test_vlan
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   test_vlan.test_get_vlans
+   test_vlan.test_generate_create_vlan_commands
+   test_vlan.test_generate_delete_vlan_commands
+
+
+
+.. py:function:: test_get_vlans(test_vlan_data, test_vlan_id, test_show_dynamic, expected)
+
+
+.. py:function:: test_generate_create_vlan_commands(test_vlan, test_bridge, expected)
+
+
+.. py:function:: test_generate_delete_vlan_commands(test_vlan_id, test_bridge, expected)
+
+

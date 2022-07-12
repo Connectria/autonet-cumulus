@@ -1,0 +1,14 @@
+:py:mod:`autonet_cumulus.__version__`
+=====================================
+
+.. py:module:: autonet_cumulus.__version__
+
+
+Module Contents
+---------------
+
+.. py:data:: __version__
+   :annotation: = 0.2.1
+
+   
+

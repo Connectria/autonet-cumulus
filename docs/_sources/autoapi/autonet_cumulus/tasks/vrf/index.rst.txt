@@ -1,0 +1,47 @@
+:py:mod:`autonet_cumulus.tasks.vrf`
+===================================
+
+.. py:module:: autonet_cumulus.tasks.vrf
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   autonet_cumulus.tasks.vrf.get_vrfs
+   autonet_cumulus.tasks.vrf.generate_create_vrf_commands
+   autonet_cumulus.tasks.vrf.generate_delete_vrf_commands
+
+
+
+.. py:function:: get_vrfs(ip_vrf_data: str, vrf_name: str = None) -> [autonet.core.objects.vrf.VRF]
+
+   Get a list of :py:class:`VRF` objects.
+
+   :param ip_vrf_data: The output of the
+       :code:`ip -o link show type vrf` command.
+   :param vrf_name: Filter for a particular VRF by name.
+   :return:
+
+
+.. py:function:: generate_create_vrf_commands(vrf: autonet.core.objects.vrf.VRF) -> [str]
+
+   Generates the commands required to create a VRF.
+
+   :param vrf: A :py:class`VRF` object.
+   :return:
+
+
+.. py:function:: generate_delete_vrf_commands(vrf_name: str) -> [str]
+
+   Generate a list of commands to delete a vrf.
+
+   :param vrf_name: The name of the VRF to be removed.
+   :return:
+
+

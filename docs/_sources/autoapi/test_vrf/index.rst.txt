@@ -1,0 +1,30 @@
+:py:mod:`test_vrf`
+==================
+
+.. py:module:: test_vrf
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   test_vrf.test_get_vrfs
+   test_vrf.test_generate_create_vrf_commands
+   test_vrf.test_generate_delete_vrf_commands
+
+
+
+.. py:function:: test_get_vrfs(test_ip_vrf_data, test_vrf_name, expected)
+
+
+.. py:function:: test_generate_create_vrf_commands(test_vrf, expected)
+
+
+.. py:function:: test_generate_delete_vrf_commands()
+
+

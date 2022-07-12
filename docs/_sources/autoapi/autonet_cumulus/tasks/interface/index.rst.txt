@@ -1,0 +1,252 @@
+:py:mod:`autonet_cumulus.tasks.interface`
+=========================================
+
+.. py:module:: autonet_cumulus.tasks.interface
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   autonet_cumulus.tasks.interface.parse_svi_name
+   autonet_cumulus.tasks.interface.parse_speed
+   autonet_cumulus.tasks.interface.parse_summary
+   autonet_cumulus.tasks.interface.parse_vrf_names
+   autonet_cumulus.tasks.interface.get_interface_type
+   autonet_cumulus.tasks.interface.get_interface_master
+   autonet_cumulus.tasks.interface.get_base_command
+   autonet_cumulus.tasks.interface.get_interface_addresses
+   autonet_cumulus.tasks.interface.get_route_attributes
+   autonet_cumulus.tasks.interface.get_bridge_attributes
+   autonet_cumulus.tasks.interface.get_interface
+   autonet_cumulus.tasks.interface.get_interfaces
+   autonet_cumulus.tasks.interface.generate_bridge_commands
+   autonet_cumulus.tasks.interface.generate_route_commands
+   autonet_cumulus.tasks.interface.generate_basic_interface_commands
+   autonet_cumulus.tasks.interface.generate_create_interface_commands
+   autonet_cumulus.tasks.interface.generate_update_interface_commands
+   autonet_cumulus.tasks.interface.generate_create_commands
+   autonet_cumulus.tasks.interface.generate_update_commands
+   autonet_cumulus.tasks.interface.generate_delete_commands
+
+
+
+.. py:function:: parse_svi_name(name: str) -> int
+
+   Returns the VLAN ID portion of the SVI name.
+
+   :param name: The SVI interface name.
+   :return:
+
+
+.. py:function:: parse_speed(speed: str) -> Union[Tuple[int, str], Tuple[None, None]]
+
+
+.. py:function:: parse_summary(summary: str) -> Tuple[Optional[str], Optional[str]]
+
+   Parses the summary string from an interface and returns
+   a tuple that represents the master interface and its state or
+   :code:`None, None`, if there is no master interface.
+
+   :param summary:
+   :return:
+
+
+.. py:function:: parse_vrf_names(show_int_data: dict) -> [str]
+
+   Parses the data from the :code:`show interface` command and returns
+   a list of vrf names present.
+
+   :param show_int_data: The data returned from :code:`show interface`
+   :return:
+
+
+.. py:function:: get_interface_type(int_name, int_data)
+
+   Determine the type of interface represented by the interface name
+   or in the case of some many virtual interface types, the interface
+   data object.  Command will return a string value that can be used
+   in the NETd command string.  If the interface data indicates the
+   interface does not exist at all, then None is returned.
+
+   :param int_name: The interface name.
+   :param int_data: The interface data object.
+   :return:
+
+
+.. py:function:: get_interface_master(summary: str) -> Optional[str]
+
+   Parses the summary string from the interface to determine master
+   device name.  If the string is parsed successfully the master
+   device name is returned, otherwise None is returned.
+
+   :param summary: Interface summary string.
+   :return:
+
+
+.. py:function:: get_base_command(int_name: str, int_type: str, action: str = 'add') -> str
+
+   Generates the base command for interface configuration.
+
+   :param int_name: The interface name.
+   :param int_type: The interface type.
+   :param action: The action to take, `add` or `del`.
+   :return:
+
+
+.. py:function:: get_interface_addresses(addresses: [str], virtual: bool = False, virtual_type: Optional[str] = None) -> [autonet.core.objects.interfaces.InterfaceAddress]
+
+   Parses a list of CIDR notated addresses into a list of
+   :py:class`InterfaceAddress` objects.
+
+   :param addresses:
+   :param virtual:
+   :param virtual_type:
+   :return:
+
+
+.. py:function:: get_route_attributes(int_data: dict, vrf_list: [str], subint_data: dict = None) -> autonet.core.objects.interfaces.InterfaceRouteAttributes
+
+   Parses the interface data and builds a
+   :py:class:`InterfaceRouteAttributes` object.  In the case of an SVI
+   with an EVPN anycast gateway the `-v0` interface's data can be
+   passed via the :py:attr:`subint_data` argument.
+
+   :param int_data: The interface data from `show interface`.
+   :param vrf_list: A list of VRF names.
+   :param subint_data: The interface data that corresponds to the data
+       passed to the :py:attr:`int_data` argument.
+   :return:
+
+
+.. py:function:: get_bridge_attributes(int_data: dict) -> autonet.core.objects.interfaces.InterfaceBridgeAttributes
+
+   Parses the interface data and builds a
+   :py:class:`InterfaceBridgeAttributes` object.
+   :param int_data: The interface data from :code:`show interface`.
+   :return:
+
+
+.. py:function:: get_interface(int_name: str, int_data: dict, subint_data: dict = None, vrf_list: [str] = None) -> autonet.core.objects.interfaces.Interface
+
+   Parses the interface name and data and returns a populated
+   :py:class:`Interface` object.  In the case of SVIs, the optional
+   :py:attr:`subint_data` would be used to pass in the
+   interface data for the `-v0` subinterface that is used for EVPN
+   anycast gateways.
+
+   :param int_name: The interface name.
+   :param int_data: The interface data from :code:`show interface`.
+   :param subint_data: The interface data that corresponds to the data
+       passed to the :py:attr:`int_data` argument.
+   :param vrf_list: A list of VRF names.
+   :return:
+
+
+.. py:function:: get_interfaces(show_int_data: dict, int_name: str = None) -> [autonet.core.objects.interfaces.Interface]
+
+   Parses the results of several commands to generate a complete list
+   of :py:class:`Interface` objects.  If :py:attr:`interface_name` is
+   provided then only one :py:class:`Interface` object is returned.
+
+   :param show_int_data: Data from the :code:`show interface` command.
+   :param int_name: Filter results to only include the provided
+       interface.
+
+
+.. py:function:: generate_bridge_commands(attributes: autonet.core.objects.interfaces.InterfaceBridgeAttributes, add_base: str, del_base: str) -> [str]
+
+   Generate a list of commands to configure an interface for bridging.
+
+   :param attributes: An :py:class:`InterfaceBridgeAttributes` object.
+   :param add_base: The base command returned from
+       :py:func:`get_base_command` for configuration adds.
+   :param del_base: The base command returned from
+       :py:func:`get_base_command` for configuration deletes.
+   :return:
+
+
+.. py:function:: generate_route_commands(attributes: autonet.core.objects.interfaces.InterfaceRouteAttributes, add_base: str, del_base: str) -> [str]
+
+   Generate a list of commands to configure an interface for routing.
+
+   :param attributes: An :py:class:`InterfaceRouteAttributes` object.
+   :param add_base: The base command returned from
+       :py:func:`get_base_command` for configuration adds.
+   :param del_base: The base command returned from
+       :py:func:`get_base_command` for configuration deletes.
+   :return:
+
+
+.. py:function:: generate_basic_interface_commands(interface: autonet.core.objects.interfaces.Interface, add_base: str, del_base: str) -> [str]
+
+   Generate a list of commands that will configure basic interface
+   attributes such as MTU and description.
+
+   :param interface:  An :py:class:`Interface` object.
+   :param add_base: The base command returned from
+       :py:func:`get_base_command` for configuration adds.
+   :param del_base: The base command returned from
+       :py:func:`get_base_command` for configuration deletes.
+   :return:
+
+
+.. py:function:: generate_create_interface_commands(interface: autonet.core.objects.interfaces.Interface, int_type: str) -> [str]
+
+   Generate a list of commands required to create an interface
+   configuration from unconfigured state.
+
+   :param interface: An :py:class:`Interface` object.
+   :param int_type: An interface type returned from
+       :py:func`get_interface_type`.
+   :return:
+
+
+.. py:function:: generate_update_interface_commands(interface: autonet.core.objects.interfaces.Interface, int_type: str, update: bool = False) -> [str]
+
+   Generate a list of commands required to update an interface.
+
+   :param interface: An :py:class:`interface` object.
+   :param int_type: An interface type returned from
+       :py:func`get_interface_type`.
+   :param update: Indicate that the interface is to be updated instead
+       of overwritten.
+   :return:
+
+
+.. py:function:: generate_create_commands(interface: autonet.core.objects.interfaces.Interface, int_type: str) -> [str]
+
+   Generate a list of commands required to create an interface.
+
+   :param interface: An :py:class:`Interface` object.
+   :param int_type: The type of interface, vlan, bond, vrf, etc.
+   :return:
+
+
+.. py:function:: generate_update_commands(interface: autonet.core.objects.interfaces.Interface, int_type: str, update: bool = False) -> [str]
+
+   Generate a list of commands required to update an interface's
+   configuration.
+
+   :param interface: An :py:class:`Interface` object.
+   :param int_type: The type of interface, vlan, bond, vrf, etc.
+   :param update: When True, unset interface properties will be
+       ignored instead of overwritten with default values.
+   :return:
+
+
+.. py:function:: generate_delete_commands(int_name: str, int_type: str) -> [str]
+
+   Create a list of commands to destroy or reset and interface, as
+   appropriate.
+
+   :param int_name: The interface name.
+   :param int_type: The interface type.
+   :return:
+
+

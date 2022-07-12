@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>test_interface &#8212; autonet-cumulus 0.2.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="test_vrf" href="../test_vrf/index.html" />
+    <link rel="prev" title="test_vlan" href="../test_vlan/index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../test_vrf/index.html" title="test_vrf"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../test_vlan/index.html" title="test_vlan"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">autonet-cumulus 0.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">API Reference</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">test_interface</span></code></a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-test_interface">
+<span id="test-interface"></span><h1><a class="reference internal" href="#module-test_interface" title="test_interface"><code class="xref py py-mod docutils literal notranslate"><span class="pre">test_interface</span></code></a><a class="headerlink" href="#module-test_interface" title="Permalink to this heading">¶</a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">¶</a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_interface.test_parse_svi_name" title="test_interface.test_parse_svi_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_parse_svi_name</span></code></a>(test_name, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_interface.test_parse_speed" title="test_interface.test_parse_speed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_parse_speed</span></code></a>(test_speed, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_interface.test_parse_summary" title="test_interface.test_parse_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_parse_summary</span></code></a>(test_summary, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_interface.test_parse_vrf_names" title="test_interface.test_parse_vrf_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_parse_vrf_names</span></code></a>(test_show_int_data)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_interface.test_get_interface_type" title="test_interface.test_get_interface_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_get_interface_type</span></code></a>(test_int_data, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_interface.test_get_interface_master" title="test_interface.test_get_interface_master"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_get_interface_master</span></code></a>(test_summary, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_interface.test_get_base_command" title="test_interface.test_get_base_command"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_get_base_command</span></code></a>(test_int_name, test_int_type, test_action, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_interface.test_get_interface_addresses" title="test_interface.test_get_interface_addresses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_get_interface_addresses</span></code></a>(test_addresses, test_virtual, test_virtual_type, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_interface.test_get_route_attributes" title="test_interface.test_get_route_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_get_route_attributes</span></code></a>(test_int_data, test_vrf_list, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_interface.test_get_bridge_attributes" title="test_interface.test_get_bridge_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_get_bridge_attributes</span></code></a>(test_int_data, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_interface.test_get_interface" title="test_interface.test_get_interface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_get_interface</span></code></a>(test_int_data, test_vrf_list, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_interface.test_get_interfaces" title="test_interface.test_get_interfaces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_get_interfaces</span></code></a>(test_show_int_data, test_interface_name, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_interface.test_generate_bridge_commands" title="test_interface.test_generate_bridge_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_generate_bridge_commands</span></code></a>(test_attributes, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_interface.test_generate_basic_interface_commands" title="test_interface.test_generate_basic_interface_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_generate_basic_interface_commands</span></code></a>(test_interface, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_interface.test_generate_create_interface_commands" title="test_interface.test_generate_create_interface_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_generate_create_interface_commands</span></code></a>(test_interface, test_int_type, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_interface.test_generate_update_interface_commands" title="test_interface.test_generate_update_interface_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_generate_update_interface_commands</span></code></a>(test_interface, test_int_type, test_update, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_interface.test_generate_create_commands" title="test_interface.test_generate_create_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_generate_create_commands</span></code></a>(test_interface, test_int_type, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_interface.test_generate_update_commands" title="test_interface.test_generate_update_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_generate_update_commands</span></code></a>(test_interface, test_int_type, test_update, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_interface.test_generate_delete_commands" title="test_interface.test_generate_delete_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_generate_delete_commands</span></code></a>(test_int_name, test_int_type, expected)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_parse_svi_name">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_parse_svi_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_parse_svi_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_parse_speed">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_parse_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_parse_speed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_parse_summary">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_parse_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_summary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_parse_summary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_parse_vrf_names">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_parse_vrf_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_show_int_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_parse_vrf_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_get_interface_type">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_get_interface_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_int_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_get_interface_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_get_interface_master">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_get_interface_master</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_summary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_get_interface_master" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_get_base_command">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_get_base_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_int_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_int_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_get_base_command" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_get_interface_addresses">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_get_interface_addresses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_addresses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_virtual</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_virtual_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_get_interface_addresses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_get_route_attributes">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_get_route_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_int_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_vrf_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_get_route_attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_get_bridge_attributes">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_get_bridge_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_int_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_get_bridge_attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_get_interface">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_get_interface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_int_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_vrf_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_get_interface" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_get_interfaces">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_get_interfaces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_show_int_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_interface_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_get_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_generate_bridge_commands">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_generate_bridge_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_attributes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_generate_bridge_commands" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_generate_basic_interface_commands">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_generate_basic_interface_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_interface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_generate_basic_interface_commands" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_generate_create_interface_commands">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_generate_create_interface_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_interface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_int_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_generate_create_interface_commands" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_generate_update_interface_commands">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_generate_update_interface_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_interface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_int_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_update</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_generate_update_interface_commands" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_generate_create_commands">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_generate_create_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_interface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_int_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_generate_create_commands" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_generate_update_commands">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_generate_update_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_interface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_int_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_update</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_generate_update_commands" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_interface.test_generate_delete_commands">
+<span class="sig-prename descclassname"><span class="pre">test_interface.</span></span><span class="sig-name descname"><span class="pre">test_generate_delete_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_int_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_int_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_interface.test_generate_delete_commands" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">test_interface</span></code></a><ul>
+<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#functions">Functions</a><ul>
+<li><a class="reference internal" href="#test_interface.test_parse_svi_name">test_parse_svi_name</a></li>
+<li><a class="reference internal" href="#test_interface.test_parse_speed">test_parse_speed</a></li>
+<li><a class="reference internal" href="#test_interface.test_parse_summary">test_parse_summary</a></li>
+<li><a class="reference internal" href="#test_interface.test_parse_vrf_names">test_parse_vrf_names</a></li>
+<li><a class="reference internal" href="#test_interface.test_get_interface_type">test_get_interface_type</a></li>
+<li><a class="reference internal" href="#test_interface.test_get_interface_master">test_get_interface_master</a></li>
+<li><a class="reference internal" href="#test_interface.test_get_base_command">test_get_base_command</a></li>
+<li><a class="reference internal" href="#test_interface.test_get_interface_addresses">test_get_interface_addresses</a></li>
+<li><a class="reference internal" href="#test_interface.test_get_route_attributes">test_get_route_attributes</a></li>
+<li><a class="reference internal" href="#test_interface.test_get_bridge_attributes">test_get_bridge_attributes</a></li>
+<li><a class="reference internal" href="#test_interface.test_get_interface">test_get_interface</a></li>
+<li><a class="reference internal" href="#test_interface.test_get_interfaces">test_get_interfaces</a></li>
+<li><a class="reference internal" href="#test_interface.test_generate_bridge_commands">test_generate_bridge_commands</a></li>
+<li><a class="reference internal" href="#test_interface.test_generate_basic_interface_commands">test_generate_basic_interface_commands</a></li>
+<li><a class="reference internal" href="#test_interface.test_generate_create_interface_commands">test_generate_create_interface_commands</a></li>
+<li><a class="reference internal" href="#test_interface.test_generate_update_interface_commands">test_generate_update_interface_commands</a></li>
+<li><a class="reference internal" href="#test_interface.test_generate_create_commands">test_generate_create_commands</a></li>
+<li><a class="reference internal" href="#test_interface.test_generate_update_commands">test_generate_update_commands</a></li>
+<li><a class="reference internal" href="#test_interface.test_generate_delete_commands">test_generate_delete_commands</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../test_vlan/index.html"
+                          title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">test_vlan</span></code></a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="../test_vrf/index.html"
+                          title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">test_vrf</span></code></a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/autoapi/test_interface/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../test_vrf/index.html" title="test_vrf"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../test_vlan/index.html" title="test_vlan"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">autonet-cumulus 0.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >API Reference</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">test_interface</span></code></a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Connectria, LLC.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    </div>
+  </body>
+</html>

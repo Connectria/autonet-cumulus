@@ -1,0 +1,578 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>autonet_cumulus.tasks.interface &#8212; autonet-cumulus 0.2.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css" />
+    
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="autonet_cumulus.tasks.lag" href="../lag/index.html" />
+    <link rel="prev" title="autonet_cumulus.tasks" href="../index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../lag/index.html" title="autonet_cumulus.tasks.lag"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="autonet_cumulus.tasks"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">autonet-cumulus 0.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../index.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus</span></code></a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../index.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks</span></code></a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks.interface</span></code></a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-autonet_cumulus.tasks.interface">
+<span id="autonet-cumulus-tasks-interface"></span><h1><a class="reference internal" href="#module-autonet_cumulus.tasks.interface" title="autonet_cumulus.tasks.interface"><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks.interface</span></code></a><a class="headerlink" href="#module-autonet_cumulus.tasks.interface" title="Permalink to this heading">¶</a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">¶</a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.parse_svi_name" title="autonet_cumulus.tasks.interface.parse_svi_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_svi_name</span></code></a>(name: str) → int</p></td>
+<td><p>Returns the VLAN ID portion of the SVI name.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.parse_speed" title="autonet_cumulus.tasks.interface.parse_speed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_speed</span></code></a>(speed: str) → Union[Tuple[int, str], Tuple[None, None]]</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.parse_summary" title="autonet_cumulus.tasks.interface.parse_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_summary</span></code></a>(summary: str) → Tuple[Optional[str], Optional[str]]</p></td>
+<td><p>Parses the summary string from an interface and returns</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.parse_vrf_names" title="autonet_cumulus.tasks.interface.parse_vrf_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_vrf_names</span></code></a>(show_int_data: dict) → [str]</p></td>
+<td><p>Parses the data from the <code class="code docutils literal notranslate"><span class="pre">show</span> <span class="pre">interface</span></code> command and returns</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_interface_type" title="autonet_cumulus.tasks.interface.get_interface_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_interface_type</span></code></a>(int_name, int_data)</p></td>
+<td><p>Determine the type of interface represented by the interface name</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_interface_master" title="autonet_cumulus.tasks.interface.get_interface_master"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_interface_master</span></code></a>(summary: str) → Optional[str]</p></td>
+<td><p>Parses the summary string from the interface to determine master</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_base_command" title="autonet_cumulus.tasks.interface.get_base_command"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_base_command</span></code></a>(int_name: str, int_type: str, action: str = 'add') → str</p></td>
+<td><p>Generates the base command for interface configuration.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_interface_addresses" title="autonet_cumulus.tasks.interface.get_interface_addresses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_interface_addresses</span></code></a>(addresses: [str], virtual: bool = False, virtual_type: Optional[str] = None) → [autonet.core.objects.interfaces.InterfaceAddress]</p></td>
+<td><p>Parses a list of CIDR notated addresses into a list of</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_route_attributes" title="autonet_cumulus.tasks.interface.get_route_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_route_attributes</span></code></a>(int_data: dict, vrf_list: [str], subint_data: dict = None) → autonet.core.objects.interfaces.InterfaceRouteAttributes</p></td>
+<td><p>Parses the interface data and builds a</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_bridge_attributes" title="autonet_cumulus.tasks.interface.get_bridge_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bridge_attributes</span></code></a>(int_data: dict) → autonet.core.objects.interfaces.InterfaceBridgeAttributes</p></td>
+<td><p>Parses the interface data and builds a</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_interface" title="autonet_cumulus.tasks.interface.get_interface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_interface</span></code></a>(int_name: str, int_data: dict, subint_data: dict = None, vrf_list: [str] = None) → autonet.core.objects.interfaces.Interface</p></td>
+<td><p>Parses the interface name and data and returns a populated</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_interfaces" title="autonet_cumulus.tasks.interface.get_interfaces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_interfaces</span></code></a>(show_int_data: dict, int_name: str = None) → [autonet.core.objects.interfaces.Interface]</p></td>
+<td><p>Parses the results of several commands to generate a complete list</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_bridge_commands" title="autonet_cumulus.tasks.interface.generate_bridge_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_bridge_commands</span></code></a>(attributes: autonet.core.objects.interfaces.InterfaceBridgeAttributes, add_base: str, del_base: str) → [str]</p></td>
+<td><p>Generate a list of commands to configure an interface for bridging.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_route_commands" title="autonet_cumulus.tasks.interface.generate_route_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_route_commands</span></code></a>(attributes: autonet.core.objects.interfaces.InterfaceRouteAttributes, add_base: str, del_base: str) → [str]</p></td>
+<td><p>Generate a list of commands to configure an interface for routing.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_basic_interface_commands" title="autonet_cumulus.tasks.interface.generate_basic_interface_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_basic_interface_commands</span></code></a>(interface: autonet.core.objects.interfaces.Interface, add_base: str, del_base: str) → [str]</p></td>
+<td><p>Generate a list of commands that will configure basic interface</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_create_interface_commands" title="autonet_cumulus.tasks.interface.generate_create_interface_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_create_interface_commands</span></code></a>(interface: autonet.core.objects.interfaces.Interface, int_type: str) → [str]</p></td>
+<td><p>Generate a list of commands required to create an interface</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_update_interface_commands" title="autonet_cumulus.tasks.interface.generate_update_interface_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_update_interface_commands</span></code></a>(interface: autonet.core.objects.interfaces.Interface, int_type: str, update: bool = False) → [str]</p></td>
+<td><p>Generate a list of commands required to update an interface.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_create_commands" title="autonet_cumulus.tasks.interface.generate_create_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_create_commands</span></code></a>(interface: autonet.core.objects.interfaces.Interface, int_type: str) → [str]</p></td>
+<td><p>Generate a list of commands required to create an interface.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_update_commands" title="autonet_cumulus.tasks.interface.generate_update_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_update_commands</span></code></a>(interface: autonet.core.objects.interfaces.Interface, int_type: str, update: bool = False) → [str]</p></td>
+<td><p>Generate a list of commands required to update an interface's</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_delete_commands" title="autonet_cumulus.tasks.interface.generate_delete_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_delete_commands</span></code></a>(int_name: str, int_type: str) → [str]</p></td>
+<td><p>Create a list of commands to destroy or reset and interface, as</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.parse_svi_name">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">parse_svi_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.parse_svi_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the VLAN ID portion of the SVI name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – The SVI interface name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.parse_speed">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">parse_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.parse_speed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.parse_summary">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">parse_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.parse_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the summary string from an interface and returns
+a tuple that represents the master interface and its state or
+<code class="code docutils literal notranslate"><span class="pre">None,</span> <span class="pre">None</span></code>, if there is no master interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>summary</strong> – </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.parse_vrf_names">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">parse_vrf_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show_int_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.parse_vrf_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the data from the <code class="code docutils literal notranslate"><span class="pre">show</span> <span class="pre">interface</span></code> command and returns
+a list of vrf names present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>show_int_data</strong> – The data returned from <code class="code docutils literal notranslate"><span class="pre">show</span> <span class="pre">interface</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.get_interface_type">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">get_interface_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autonet_cumulus.tasks.interface.get_interface_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the type of interface represented by the interface name
+or in the case of some many virtual interface types, the interface
+data object.  Command will return a string value that can be used
+in the NETd command string.  If the interface data indicates the
+interface does not exist at all, then None is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>int_name</strong> – The interface name.</p></li>
+<li><p><strong>int_data</strong> – The interface data object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.get_interface_master">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">get_interface_master</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.get_interface_master" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the summary string from the interface to determine master
+device name.  If the string is parsed successfully the master
+device name is returned, otherwise None is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>summary</strong> – Interface summary string.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.get_base_command">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">get_base_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'add'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.get_base_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the base command for interface configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>int_name</strong> – The interface name.</p></li>
+<li><p><strong>int_type</strong> – The interface type.</p></li>
+<li><p><strong>action</strong> – The action to take, <cite>add</cite> or <cite>del</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.get_interface_addresses">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">get_interface_addresses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addresses</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">virtual</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">virtual_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">autonet.core.objects.interfaces.InterfaceAddress</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.get_interface_addresses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a list of CIDR notated addresses into a list of
+:py:class`InterfaceAddress` objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addresses</strong> – </p></li>
+<li><p><strong>virtual</strong> – </p></li>
+<li><p><strong>virtual_type</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.get_route_attributes">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">get_route_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vrf_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subint_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">autonet.core.objects.interfaces.InterfaceRouteAttributes</span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.get_route_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the interface data and builds a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">InterfaceRouteAttributes</span></code> object.  In the case of an SVI
+with an EVPN anycast gateway the <cite>-v0</cite> interface’s data can be
+passed via the <code class="xref py py-attr docutils literal notranslate"><span class="pre">subint_data</span></code> argument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>int_data</strong> – The interface data from <cite>show interface</cite>.</p></li>
+<li><p><strong>vrf_list</strong> – A list of VRF names.</p></li>
+<li><p><strong>subint_data</strong> – The interface data that corresponds to the data
+passed to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">int_data</span></code> argument.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.get_bridge_attributes">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">get_bridge_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">autonet.core.objects.interfaces.InterfaceBridgeAttributes</span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.get_bridge_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the interface data and builds a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">InterfaceBridgeAttributes</span></code> object.
+:param int_data: The interface data from <code class="code docutils literal notranslate"><span class="pre">show</span> <span class="pre">interface</span></code>.
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.get_interface">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">get_interface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subint_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vrf_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">autonet.core.objects.interfaces.Interface</span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.get_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the interface name and data and returns a populated
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code> object.  In the case of SVIs, the optional
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">subint_data</span></code> would be used to pass in the
+interface data for the <cite>-v0</cite> subinterface that is used for EVPN
+anycast gateways.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>int_name</strong> – The interface name.</p></li>
+<li><p><strong>int_data</strong> – The interface data from <code class="code docutils literal notranslate"><span class="pre">show</span> <span class="pre">interface</span></code>.</p></li>
+<li><p><strong>subint_data</strong> – The interface data that corresponds to the data
+passed to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">int_data</span></code> argument.</p></li>
+<li><p><strong>vrf_list</strong> – A list of VRF names.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.get_interfaces">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">get_interfaces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show_int_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">autonet.core.objects.interfaces.Interface</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.get_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the results of several commands to generate a complete list
+of <code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code> objects.  If <code class="xref py py-attr docutils literal notranslate"><span class="pre">interface_name</span></code> is
+provided then only one <code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code> object is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>show_int_data</strong> – Data from the <code class="code docutils literal notranslate"><span class="pre">show</span> <span class="pre">interface</span></code> command.</p></li>
+<li><p><strong>int_name</strong> – Filter results to only include the provided
+interface.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.generate_bridge_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">generate_bridge_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autonet.core.objects.interfaces.InterfaceBridgeAttributes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">del_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.generate_bridge_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of commands to configure an interface for bridging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attributes</strong> – An <code class="xref py py-class docutils literal notranslate"><span class="pre">InterfaceBridgeAttributes</span></code> object.</p></li>
+<li><p><strong>add_base</strong> – The base command returned from
+<a class="reference internal" href="#autonet_cumulus.tasks.interface.get_base_command" title="autonet_cumulus.tasks.interface.get_base_command"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_base_command()</span></code></a> for configuration adds.</p></li>
+<li><p><strong>del_base</strong> – The base command returned from
+<a class="reference internal" href="#autonet_cumulus.tasks.interface.get_base_command" title="autonet_cumulus.tasks.interface.get_base_command"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_base_command()</span></code></a> for configuration deletes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.generate_route_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">generate_route_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autonet.core.objects.interfaces.InterfaceRouteAttributes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">del_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.generate_route_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of commands to configure an interface for routing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attributes</strong> – An <code class="xref py py-class docutils literal notranslate"><span class="pre">InterfaceRouteAttributes</span></code> object.</p></li>
+<li><p><strong>add_base</strong> – The base command returned from
+<a class="reference internal" href="#autonet_cumulus.tasks.interface.get_base_command" title="autonet_cumulus.tasks.interface.get_base_command"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_base_command()</span></code></a> for configuration adds.</p></li>
+<li><p><strong>del_base</strong> – The base command returned from
+<a class="reference internal" href="#autonet_cumulus.tasks.interface.get_base_command" title="autonet_cumulus.tasks.interface.get_base_command"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_base_command()</span></code></a> for configuration deletes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.generate_basic_interface_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">generate_basic_interface_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autonet.core.objects.interfaces.Interface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">del_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.generate_basic_interface_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of commands that will configure basic interface
+attributes such as MTU and description.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface</strong> – An <code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code> object.</p></li>
+<li><p><strong>add_base</strong> – The base command returned from
+<a class="reference internal" href="#autonet_cumulus.tasks.interface.get_base_command" title="autonet_cumulus.tasks.interface.get_base_command"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_base_command()</span></code></a> for configuration adds.</p></li>
+<li><p><strong>del_base</strong> – The base command returned from
+<a class="reference internal" href="#autonet_cumulus.tasks.interface.get_base_command" title="autonet_cumulus.tasks.interface.get_base_command"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_base_command()</span></code></a> for configuration deletes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.generate_create_interface_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">generate_create_interface_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autonet.core.objects.interfaces.Interface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.generate_create_interface_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of commands required to create an interface
+configuration from unconfigured state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface</strong> – An <code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code> object.</p></li>
+<li><p><strong>int_type</strong> – An interface type returned from
+:py:func`get_interface_type`.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.generate_update_interface_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">generate_update_interface_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autonet.core.objects.interfaces.Interface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.generate_update_interface_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of commands required to update an interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface</strong> – An <code class="xref py py-class docutils literal notranslate"><span class="pre">interface</span></code> object.</p></li>
+<li><p><strong>int_type</strong> – An interface type returned from
+:py:func`get_interface_type`.</p></li>
+<li><p><strong>update</strong> – Indicate that the interface is to be updated instead
+of overwritten.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.generate_create_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">generate_create_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autonet.core.objects.interfaces.Interface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.generate_create_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of commands required to create an interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface</strong> – An <code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code> object.</p></li>
+<li><p><strong>int_type</strong> – The type of interface, vlan, bond, vrf, etc.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.generate_update_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">generate_update_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autonet.core.objects.interfaces.Interface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.generate_update_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of commands required to update an interface’s
+configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface</strong> – An <code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code> object.</p></li>
+<li><p><strong>int_type</strong> – The type of interface, vlan, bond, vrf, etc.</p></li>
+<li><p><strong>update</strong> – When True, unset interface properties will be
+ignored instead of overwritten with default values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autonet_cumulus.tasks.interface.generate_delete_commands">
+<span class="sig-prename descclassname"><span class="pre">autonet_cumulus.tasks.interface.</span></span><span class="sig-name descname"><span class="pre">generate_delete_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autonet_cumulus.tasks.interface.generate_delete_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a list of commands to destroy or reset and interface, as
+appropriate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>int_name</strong> – The interface name.</p></li>
+<li><p><strong>int_type</strong> – The interface type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks.interface</span></code></a><ul>
+<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#functions">Functions</a><ul>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.parse_svi_name">parse_svi_name</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.parse_speed">parse_speed</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.parse_summary">parse_summary</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.parse_vrf_names">parse_vrf_names</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_interface_type">get_interface_type</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_interface_master">get_interface_master</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_base_command">get_base_command</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_interface_addresses">get_interface_addresses</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_route_attributes">get_route_attributes</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_bridge_attributes">get_bridge_attributes</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_interface">get_interface</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.get_interfaces">get_interfaces</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_bridge_commands">generate_bridge_commands</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_route_commands">generate_route_commands</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_basic_interface_commands">generate_basic_interface_commands</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_create_interface_commands">generate_create_interface_commands</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_update_interface_commands">generate_update_interface_commands</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_create_commands">generate_create_commands</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_update_commands">generate_update_commands</a></li>
+<li><a class="reference internal" href="#autonet_cumulus.tasks.interface.generate_delete_commands">generate_delete_commands</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../index.html"
+                          title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks</span></code></a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="../lag/index.html"
+                          title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks.lag</span></code></a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../../_sources/autoapi/autonet_cumulus/tasks/interface/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../lag/index.html" title="autonet_cumulus.tasks.lag"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="autonet_cumulus.tasks"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">autonet-cumulus 0.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../index.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus</span></code></a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../index.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks</span></code></a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">autonet_cumulus.tasks.interface</span></code></a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Connectria, LLC.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Driver Behavior Notes &#8212; autonet-cumulus 0.2.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="autoapi/index.html" />
+    <link rel="prev" title="Driver Configuration" href="configuration.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autoapi/index.html" title="API Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="configuration.html" title="Driver Configuration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">autonet-cumulus 0.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Driver Behavior Notes</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="driver-behavior-notes">
+<h1>Driver Behavior Notes<a class="headerlink" href="#driver-behavior-notes" title="Permalink to this heading">¶</a></h1>
+<section id="interfaces">
+<h2>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this heading">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>When performing updates to existing interface where the interface
+mode changes the driver will perform a full wipe and commit of the
+interface configuration.  This may cause the operation to take
+additional time depending on the size of the switch configuration.</p></li>
+<li><p>EVPN Anycast GW support is present and requires that the anycast
+gateway MAC address be sent as part of the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">InterfaceRouteAttributes</span></code> when making interface requests
+to configure an anycast address.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="vlans">
+<h2>VLANs<a class="headerlink" href="#vlans" title="Permalink to this heading">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Creating a VLAN will return a valid response and apply the VLAN ID
+to the bridge device, but will have no real effect.  Subsequent
+calls to read the VLAN will not show it present, nor will continued
+create requests fail with an <code class="xref py py-exc docutils literal notranslate"><span class="pre">ObjectExists</span></code> error.  This is
+because Cumulus (and Linux) doesn’t indicate the VLAN exists on a
+bridge device until there is an interface participating in that
+VLAN.</p></li>
+<li><p>VLAN modification operations are unsupported.  Cumulus does not
+provided ability to name VLANs, nor set their operational state.</p></li>
+<li><p>The Cumulus Linux driver has a configurable set of VLANs that are
+used for binding to EVPN L3VNIs.  VLAN operations that attempt to
+create or delete these VLANs will raise an exception.  See
+<a class="reference internal" href="configuration.html"><span class="doc">Driver Configuration</span></a> for more information.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="vrfs">
+<h2>VRFs<a class="headerlink" href="#vrfs" title="Permalink to this heading">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Because Cumulus Linux does not support any BGP-VPN functionality
+the VRF create and delete functions ignore any BGP-VPN related
+configuration information, route-targets, etc.</p></li>
+<li><p>Because Cumulus Linux does not support any BGP-VPN functionality
+there is no driver support for VRF update functions.</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Driver Behavior Notes</a><ul>
+<li><a class="reference internal" href="#interfaces">Interfaces</a></li>
+<li><a class="reference internal" href="#vlans">VLANs</a></li>
+<li><a class="reference internal" href="#vrfs">VRFs</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="configuration.html"
+                          title="previous chapter">Driver Configuration</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="autoapi/index.html"
+                          title="next chapter">API Reference</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/driver_notes.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autoapi/index.html" title="API Reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="configuration.html" title="Driver Configuration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">autonet-cumulus 0.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Driver Behavior Notes</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Connectria, LLC.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    </div>
+  </body>
+</html>

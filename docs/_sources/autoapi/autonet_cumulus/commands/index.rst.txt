@@ -1,0 +1,68 @@
+:py:mod:`autonet_cumulus.commands`
+==================================
+
+.. py:module:: autonet_cumulus.commands
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   autonet_cumulus.commands.CommandResult
+   autonet_cumulus.commands.CommandResultSet
+
+
+
+
+.. py:class:: CommandResult
+
+   Bases: :py:obj:`object`
+
+   .. py:attribute:: command
+      :annotation: :str
+
+      
+
+   .. py:attribute:: original_command
+      :annotation: :str
+
+      
+
+   .. py:attribute:: stdout
+      :annotation: :str
+
+      
+
+   .. py:attribute:: stderr
+      :annotation: :str
+
+      
+
+   .. py:attribute:: json
+      :annotation: :Optional[Union[dict, list]]
+
+      
+
+
+.. py:class:: CommandResultSet
+
+   Bases: :py:obj:`list`
+
+   Represents a set of results.  Provides a way to query for the
+   results of a given command by passing the command index, or the
+   command itself, to :py:meth:`get()`.
+
+   .. py:method:: get(self, command: str) -> Optional[CommandResult]
+
+      Searches the result set for a given :py:class:`CommandResult` based
+      on the command issued.
+
+      :param command: The command to search for.
+      :return:
+
+
+
