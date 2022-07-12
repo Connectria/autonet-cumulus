@@ -264,7 +264,7 @@ class CumulusDriver(DeviceDriver):
         show_int_command = f'show interface {int_name}'
         results = self._exec_net_commands([show_int_command])
         int_data = results.get(show_int_command)
-        return if_task.get_interface_type(int_name, int_data)
+        return if_task.get_interface_type(int_name, int_data.json)
 
     def _get_vxlan_data(self) -> dict:
         """
